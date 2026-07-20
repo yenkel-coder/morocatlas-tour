@@ -1,0 +1,143 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  --color-sand: var(--sand);
+  --color-sand-soft: var(--sand-soft);
+  --color-sand-deep: var(--sand-deep);
+  --color-clay: var(--clay);
+  --color-clay-soft: var(--clay-soft);
+  --color-night: var(--night);
+  --color-gold: var(--gold);
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-logo: "Manrope", "Inter", system-ui, sans-serif;
+  --color-brand: #d57355;
+
+  --shadow-soft: 0 30px 60px -30px color-mix(in oklab, var(--night) 18%, transparent);
+  --shadow-card: 0 1px 0 0 color-mix(in oklab, var(--night) 6%, transparent);
+}
+
+:root {
+  --radius: 0.25rem;
+
+  --background: oklch(0.985 0.008 75);
+  --foreground: oklch(0.18 0.01 60);
+
+  --sand: oklch(0.985 0.008 75);
+  --sand-soft: oklch(0.96 0.012 75);
+  --sand-deep: oklch(0.91 0.02 70);
+  --clay: oklch(0.66 0.13 38);
+  --clay-soft: oklch(0.78 0.08 40);
+  --night: oklch(0.2 0.01 60);
+  --gold: oklch(0.74 0.08 75);
+
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+  --primary: var(--night);
+  --primary-foreground: oklch(0.985 0.008 75);
+  --secondary: var(--sand-soft);
+  --secondary-foreground: var(--night);
+  --muted: var(--sand-soft);
+  --muted-foreground: oklch(0.38 0.01 60);
+  --accent: var(--clay);
+  --accent-foreground: oklch(0.985 0.008 75);
+  --destructive: oklch(0.55 0.2 25);
+  --destructive-foreground: oklch(0.985 0.008 75);
+  --border: oklch(0.18 0.01 60 / 10%);
+  --input: oklch(0.18 0.01 60 / 12%);
+  --ring: var(--clay);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--clay) 22%, transparent);
+  }
+}
+
+@layer components {
+  .field-underline {
+    @apply w-full bg-transparent border-0 border-b border-night/15 py-3 text-base
+           focus:outline-none focus:border-clay transition-colors
+           placeholder:text-night/30;
+  }
+  .label-eyebrow {
+    @apply text-[10px] uppercase tracking-[0.22em] text-night/70 font-medium;
+  }
+  .font-logo {
+    font-family: var(--font-logo);
+    letter-spacing: 0.08em;
+    font-weight: 800;
+  }
+  .btn-brand {
+    background-color: #d57355;
+    color: #fff;
+    @apply inline-flex items-center gap-2 px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] rounded-sm transition-all hover:opacity-90 hover:shadow-md;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-3 bg-night text-sand px-8 py-4 text-[11px]
+           uppercase tracking-[0.22em] hover:bg-clay transition-colors;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em]
+           text-night/50 hover:text-night transition-colors;
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
