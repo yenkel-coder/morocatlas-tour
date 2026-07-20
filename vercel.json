@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "functions": {
     "dist/server/server.js": {
-      "runtime": "nodejs20.x",
+      "runtime": "@vercel/node@4",
       "maxDuration": 30
     }
   },
