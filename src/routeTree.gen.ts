@@ -10,10 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CircuitSlugRouteImport } from './routes/circuit.$slug'
 import { Route as ConfigurerRouteImport } from './routes/configurer'
 import { Route as GalerieRouteImport } from './routes/galerie'
 import { Route as InspirationsRouteImport } from './routes/inspirations'
-import { Route as InspirationsSlugRouteImport } from './routes/inspirations.$slug'
 import { Route as PhilosophieRouteImport } from './routes/philosophie'
 import { Route as QuiSommesNousRouteImport } from './routes/qui-sommes-nous'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -21,6 +21,11 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CircuitSlugRoute = CircuitSlugRouteImport.update({
+  id: '/circuit/$slug',
+  path: '/circuit/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfigurerRoute = ConfigurerRouteImport.update({
@@ -36,11 +41,6 @@ const GalerieRoute = GalerieRouteImport.update({
 const InspirationsRoute = InspirationsRouteImport.update({
   id: '/inspirations',
   path: '/inspirations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InspirationsSlugRoute = InspirationsSlugRouteImport.update({
-  id: '/inspirations/$slug',
-  path: '/inspirations/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PhilosophieRoute = PhilosophieRouteImport.update({
@@ -61,20 +61,20 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/circuit/$slug': typeof CircuitSlugRoute
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRoute
-  '/inspirations/$slug': typeof InspirationsSlugRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/circuit/$slug': typeof CircuitSlugRoute
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRoute
-  '/inspirations/$slug': typeof InspirationsSlugRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -82,10 +82,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/circuit/$slug': typeof CircuitSlugRoute
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRoute
-  '/inspirations/$slug': typeof InspirationsSlugRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -94,30 +94,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/circuit/$slug'
     | '/configurer'
     | '/galerie'
     | '/inspirations'
-    | '/inspirations/$slug'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/circuit/$slug'
     | '/configurer'
     | '/galerie'
     | '/inspirations'
-    | '/inspirations/$slug'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
+    | '/circuit/$slug'
     | '/configurer'
     | '/galerie'
     | '/inspirations'
-    | '/inspirations/$slug'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
@@ -125,10 +125,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CircuitSlugRoute: typeof CircuitSlugRoute
   ConfigurerRoute: typeof ConfigurerRoute
   GalerieRoute: typeof GalerieRoute
   InspirationsRoute: typeof InspirationsRoute
-  InspirationsSlugRoute: typeof InspirationsSlugRoute
   PhilosophieRoute: typeof PhilosophieRoute
   QuiSommesNousRoute: typeof QuiSommesNousRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -140,6 +140,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/circuit/$slug': {
+      id: '/circuit/$slug'
+      path: '/circuit/$slug'
+      fullPath: '/circuit/$slug'
+      preLoaderRoute: typeof CircuitSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configurer': {
@@ -161,13 +168,6 @@ declare module '@tanstack/react-router' {
       path: '/inspirations'
       fullPath: '/inspirations'
       preLoaderRoute: typeof InspirationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inspirations/$slug': {
-      id: '/inspirations/$slug'
-      path: '/$slug'
-      fullPath: '/inspirations/$slug'
-      preLoaderRoute: typeof InspirationsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/philosophie': {
@@ -195,10 +195,10 @@ declare module '@tanstack/react-router' {
 }
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CircuitSlugRoute: CircuitSlugRoute,
   ConfigurerRoute: ConfigurerRoute,
   GalerieRoute: GalerieRoute,
   InspirationsRoute: InspirationsRoute,
-  InspirationsSlugRoute: InspirationsSlugRoute,
   PhilosophieRoute: PhilosophieRoute,
   QuiSommesNousRoute: QuiSommesNousRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
