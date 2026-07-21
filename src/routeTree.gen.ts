@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConfigurerRouteImport } from './routes/configurer'
 import { Route as GalerieRouteImport } from './routes/galerie'
 import { Route as InspirationsRouteImport } from './routes/inspirations'
+import { Route as InspirationsSlugRouteImport } from './routes/inspirations.$slug'
 import { Route as PhilosophieRouteImport } from './routes/philosophie'
 import { Route as QuiSommesNousRouteImport } from './routes/qui-sommes-nous'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -37,6 +38,11 @@ const InspirationsRoute = InspirationsRouteImport.update({
   path: '/inspirations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InspirationsSlugRoute = InspirationsSlugRouteImport.update({
+  id: '/inspirations/$slug',
+  path: '/inspirations/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PhilosophieRoute = PhilosophieRouteImport.update({
   id: '/philosophie',
   path: '/philosophie',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRoute
+  '/inspirations/$slug': typeof InspirationsSlugRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRoute
+  '/inspirations/$slug': typeof InspirationsSlugRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRoute
+  '/inspirations/$slug': typeof InspirationsSlugRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/inspirations/$slug'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/inspirations/$slug'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/inspirations/$slug'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
@@ -116,11 +128,11 @@ export interface RootRouteChildren {
   ConfigurerRoute: typeof ConfigurerRoute
   GalerieRoute: typeof GalerieRoute
   InspirationsRoute: typeof InspirationsRoute
+  InspirationsSlugRoute: typeof InspirationsSlugRoute
   PhilosophieRoute: typeof PhilosophieRoute
   QuiSommesNousRoute: typeof QuiSommesNousRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
-
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
@@ -151,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InspirationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inspirations/$slug': {
+      id: '/inspirations/$slug'
+      path: '/$slug'
+      fullPath: '/inspirations/$slug'
+      preLoaderRoute: typeof InspirationsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/philosophie': {
       id: '/philosophie'
       path: '/philosophie'
@@ -174,19 +193,19 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConfigurerRoute: ConfigurerRoute,
   GalerieRoute: GalerieRoute,
   InspirationsRoute: InspirationsRoute,
+  InspirationsSlugRoute: InspirationsSlugRoute,
   PhilosophieRoute: PhilosophieRoute,
   QuiSommesNousRoute: QuiSommesNousRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes()
 
 import type { getRouter } from './router.tsx'
 import type { startInstance } from './start.ts'
@@ -194,6 +213,6 @@ declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+    config: Awaited<ReturnType<typeof startInstance>>
   }
 }
