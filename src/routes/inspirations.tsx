@@ -29,7 +29,7 @@ function InspirationsPage() {
     <div className="min-h-screen bg-sand text-night">
       <SiteHeader />
       <main className="pt-32 px-6 md:px-8 pb-24">
-        <div className="max-w-w-2xl mx-auto mb-16 animate-fade-up">
+        <div className="max-w-2xl mx-auto mb-16 animate-fade-up">
           <p className="label-eyebrow text-clay mb-4">Inspirations</p>
           <h1 className="font-serif text-5xl md:text-6xl mb-6 text-balance">Circuits signature.</h1>
           <p className="text-lg text-night/65 leading-relaxed">
@@ -41,7 +41,7 @@ function InspirationsPage() {
           {items.map((i, idx) => (
             <Link
               key={idx}
-              to="/inspirations/$slug"
+              to="/circuit/$slug"
               params={{ slug: i.slug }}
               className="group block"
             >
