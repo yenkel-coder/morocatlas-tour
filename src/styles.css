@@ -50,12 +50,12 @@
 :root {
   --radius: 0.25rem;
 
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0.008 75);
   --foreground: oklch(0.18 0.01 60);
 
-  --sand: oklch(1 0 0);
-  --sand-soft: oklch(0.975 0 0);
-  --sand-deep: oklch(0.94 0.005 70);
+  --sand: oklch(0.985 0.008 75);
+  --sand-soft: oklch(0.96 0.012 75);
+  --sand-deep: oklch(0.91 0.02 70);
   --clay: oklch(0.66 0.13 38);
   --clay-soft: oklch(0.78 0.08 40);
   --night: oklch(0.2 0.01 60);
