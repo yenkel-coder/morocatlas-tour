@@ -114,7 +114,7 @@ function HomePage() {
         </section>
 
         {/* FEATURES / RASSURANCE */}
-        <section className="px-6 md:px-8 py-24 md:py-28 bg-sand-soft">
+        <section className="px-6 md:px-8 py-24 md:py-28 bg-sand-soft border-t border-night/10">
           <div className="max-w-7xl mx-auto">
             <div className="grid gap-14 md:gap-10 md:grid-cols-3">
               {[
@@ -148,7 +148,7 @@ function HomePage() {
         </section>
 
         {/* INSPIRATIONS */}
-        <section className="px-6 md:px-8 pt-24 pb-12 md:pb-16">
+        <section className="px-6 md:px-8 pt-24 pb-12 md:pb-16 border-t border-night/10">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-end justify-between mb-16">
               <div>

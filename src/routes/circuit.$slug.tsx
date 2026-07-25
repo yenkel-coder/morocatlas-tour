@@ -72,7 +72,7 @@ function CircuitDetailPage() {
           </section>
 
           {/* Itinéraire */}
-          <section>
+          <section className="pt-12 border-t border-night/10">
             <h2 className="font-serif text-2xl mb-6">Itinéraire jour par jour</h2>
             <ol className="space-y-4">
               {circuit.itinerary.map((step, i) => (
@@ -114,7 +114,7 @@ function CircuitDetailPage() {
           </div>
 
           {/* Non inclus */}
-          <div>
+          <div className="pt-6 border-t border-night/10">
             <h3 className="font-medium mb-3 text-sm uppercase tracking-wider">Non inclus</h3>
             <ul className="space-y-2">
               {circuit.notIncluded.map((item, i) => (
