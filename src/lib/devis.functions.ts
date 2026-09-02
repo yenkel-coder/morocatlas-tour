@@ -79,6 +79,7 @@ export const sendDevisRequest = createServerFn({ method: "POST" })
     const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
 
     const fromAddress = process.env.RESEND_FROM_EMAIL || "Marocatlastour <onboarding@resend.dev>";
+    const ownerEmail = process.env.OWNER_NOTIFICATION_EMAIL || "yenkel@gmail.com";
 
     const ownerRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -88,7 +89,7 @@ export const sendDevisRequest = createServerFn({ method: "POST" })
       },
       body: JSON.stringify({
         from: fromAddress,
-        to: ["yenkel@hotmail.com"],
+        to: [ownerEmail],
         reply_to: data.email,
         subject: `Nouvelle demande de voyage sur mesure`,
         html,
