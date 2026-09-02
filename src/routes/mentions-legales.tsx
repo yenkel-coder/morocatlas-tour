@@ -31,14 +31,14 @@ function MentionsLegalesPage() {
               <section>
                 <h2 className="font-serif text-2xl text-night mb-3">Site publisher</h2>
                 <p>
-                  The site marocatlastour.com is published by Mhandi, a private individual
-                  residing in Paris, Île-de-France, France, acting in a non-professional capacity.
+                  The site marocatlastour.com is published by Ali Mhandi, a private individual
+                  residing at Abwab Guéliz Targa, Marrakech, Morocco, acting in a non-professional capacity.
                 </p>
                 <p className="mt-2">
                   Contact: <a href="mailto:contact@marocatlastour.com" className="text-clay hover:underline">contact@marocatlastour.com</a>
                   {" "}— <a href="tel:+33780390269" className="text-clay hover:underline">+33 7 80 39 02 69</a>
                 </p>
-                <p className="mt-2">Publication director: Mhandi.</p>
+                <p className="mt-2">Publication director: Ali Mhandi.</p>
               </section>
 
               <section>
@@ -106,14 +106,14 @@ function MentionsLegalesPage() {
             <section>
               <h2 className="font-serif text-2xl text-night mb-3">Éditeur du site</h2>
               <p>
-                Le site marocatlastour.com est édité par Mhandi, personne physique domiciliée
-                à Paris, Île-de-France, France, agissant à titre non professionnel.
+                Le site marocatlastour.com est édité par Ali Mhandi, personne physique domiciliée
+                Abwab Guéliz Targa, Marrakech, Maroc, agissant à titre non professionnel.
               </p>
               <p className="mt-2">
                 Contact : <a href="mailto:contact@marocatlastour.com" className="text-clay hover:underline">contact@marocatlastour.com</a>
                 {" "}— <a href="tel:+33780390269" className="text-clay hover:underline">+33 7 80 39 02 69</a>
               </p>
-              <p className="mt-2">Directeur de la publication : Mhandi.</p>
+              <p className="mt-2">Directeur de la publication : Ali Mhandi.</p>
             </section>
 
             <section>
