@@ -78,14 +78,16 @@ export const sendDevisRequest = createServerFn({ method: "POST" })
 
     const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
 
-    const res = await fetch("https://api.resend.com/emails", {
+    const fromAddress = process.env.RESEND_FROM_EMAIL || "Marocatlastour <onboarding@resend.dev>";
+
+    const ownerRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: "Marocatlastour <onboarding@resend.dev>",
+        from: fromAddress,
         to: ["yenkel@hotmail.com"],
         reply_to: data.email,
         subject: `Nouvelle demande de voyage sur mesure`,
@@ -94,10 +96,54 @@ export const sendDevisRequest = createServerFn({ method: "POST" })
       }),
     });
 
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error("Resend error", res.status, body);
-      return { ok: false, error: `Email send failed (${res.status})` };
+    if (!ownerRes.ok) {
+      const body = await ownerRes.text().catch(() => "");
+      console.error("Resend error (owner notification)", ownerRes.status, body);
+      return { ok: false, error: `Email send failed (${ownerRes.status})` };
+    }
+
+    const confirmationHtml = `
+      <div style="font-family:Arial,sans-serif;color:#222;max-width:640px;margin:auto">
+        <h2 style="color:#7a4a1e">Votre demande a bien été reçue</h2>
+        <p>Bonjour ${escapeHtml(data.name)},</p>
+        <p>Merci pour votre demande de voyage sur mesure au Maroc. Notre équipe l'étudie et vous enverra un devis personnalisé sous 48h.</p>
+        <p style="margin-top:16px;font-weight:bold">Récapitulatif de votre demande :</p>
+        <table style="border-collapse:collapse;width:100%">
+          ${rows
+            .filter(([k]) => k !== "Email")
+            .map(
+              ([k, v]) => `
+            <tr>
+              <td style="padding:8px 12px;border:1px solid #eee;background:#faf6f0;font-weight:bold;width:160px">${escapeHtml(k)}</td>
+              <td style="padding:8px 12px;border:1px solid #eee;white-space:pre-wrap">${escapeHtml(v)}</td>
+            </tr>`,
+            )
+            .join("")}
+        </table>
+        <p style="color:#888;margin-top:24px;font-size:12px">À bientôt, l'équipe Marocatlastour.</p>
+      </div>
+    `;
+    const confirmationText = `Bonjour ${data.name},\n\nMerci pour votre demande de voyage sur mesure au Maroc. Notre équipe l'étudie et vous enverra un devis personnalisé sous 48h.\n\n${text}\n\nÀ bientôt, l'équipe Marocatlastour.`;
+
+    const confirmationRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [data.email],
+        subject: "Votre demande de voyage sur mesure — Marocatlastour",
+        html: confirmationHtml,
+        text: confirmationText,
+      }),
+    });
+
+    if (!confirmationRes.ok) {
+      const body = await confirmationRes.text().catch(() => "");
+      console.error("Resend error (customer confirmation)", confirmationRes.status, body);
+      // Owner notification already succeeded; don't fail the whole request over the confirmation email.
     }
 
     return { ok: true };

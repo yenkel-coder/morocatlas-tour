@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { circuits } from "../lib/circuits";
 
-const BASE_URL = "";
+const BASE_URL = "https://www.marocatlastour.com";
 
 interface SitemapEntry { path: string; changefreq?: string; priority?: string; }
 
@@ -14,6 +15,15 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/configurer", changefreq: "weekly", priority: "0.9" },
           { path: "/inspirations", changefreq: "weekly", priority: "0.8" },
           { path: "/philosophie", changefreq: "monthly", priority: "0.6" },
+          { path: "/galerie", changefreq: "monthly", priority: "0.6" },
+          { path: "/qui-sommes-nous", changefreq: "monthly", priority: "0.5" },
+          { path: "/mentions-legales", changefreq: "yearly", priority: "0.2" },
+          { path: "/cgv", changefreq: "yearly", priority: "0.2" },
+          ...circuits.map((c) => ({
+            path: `/circuit/${c.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
+          })),
         ];
         const urls = entries.map(e => [
           `  <url>`,

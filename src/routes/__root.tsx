@@ -9,17 +9,37 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import ogImage from "../assets/hero-riad.jpg";
+import { WhatsAppFloat } from "../components/WhatsAppFloat";
+import { LanguageProvider, useLanguage } from "../lib/i18n";
+
+const SITE_URL = "https://www.marocatlastour.com";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  name: "Marocatlastour",
+  url: SITE_URL,
+  description:
+    "Voyages sur mesure au Maroc : riads, désert, Atlas et artisanat, composés en 10 étapes.",
+  areaServed: {
+    "@type": "Country",
+    name: "Maroc",
+  },
+};
 
 function NotFoundComponent() {
+  const { language } = useLanguage();
+  const t = language === "fr"
+    ? { eyebrow: "Erreur 404", title: "Page introuvable", body: "Cette destination n'existe pas. Reprenons le fil de votre voyage.", cta: "Retour à l'accueil" }
+    : { eyebrow: "404 error", title: "Page not found", body: "This destination doesn't exist. Let's pick up the thread of your journey.", cta: "Back to home" };
   return (
     <div className="flex min-h-screen items-center justify-center bg-sand px-4">
       <div className="max-w-md text-center">
-        <p className="label-eyebrow mb-4">Erreur 404</p>
-        <h1 className="font-serif text-5xl mb-4">Page introuvable</h1>
-        <p className="text-sm text-night/60 mb-8">
-          Cette destination n'existe pas. Reprenons le fil de votre voyage.
-        </p>
-        <Link to="/" className="btn-primary">Retour à l'accueil</Link>
+        <p className="label-eyebrow mb-4">{t.eyebrow}</p>
+        <h1 className="font-serif text-5xl mb-4">{t.title}</h1>
+        <p className="text-sm text-night/60 mb-8">{t.body}</p>
+        <Link to="/" className="btn-primary">{t.cta}</Link>
       </div>
     </div>
   );
@@ -28,16 +48,20 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = language === "fr"
+    ? { title: "Une parenthèse imprévue", cta: "Réessayer" }
+    : { title: "An unexpected pause", cta: "Try again" };
   return (
     <div className="flex min-h-screen items-center justify-center bg-sand px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-serif text-3xl mb-3">Une parenthèse imprévue</h1>
+        <h1 className="font-serif text-3xl mb-3">{t.title}</h1>
         <p className="text-sm text-night/60 mb-6">{error.message}</p>
         <button
           onClick={() => { router.invalidate(); reset(); }}
           className="btn-primary"
         >
-          Réessayer
+          {t.cta}
         </button>
       </div>
     </div>
@@ -62,16 +86,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Composez votre circuit sur mesure au Maroc en 10 étapes. Devis personnalisé sous 48h.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "marocatlastour — Voyages sur mesure au Maroc" },
-      { name: "description", content: "Build custom Morocco travel itineraries with an intelligent configurator and 10-step journey builder." },
-      { property: "og:description", content: "Build custom Morocco travel itineraries with an intelligent configurator and 10-step journey builder." },
-      { name: "twitter:description", content: "Build custom Morocco travel itineraries with an intelligent configurator and 10-step journey builder." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ecf8ded8-193f-40c3-a980-a71f9111b91e/id-preview-5411dc83--0c0bdcc6-6fb5-40ed-8294-7e93b7c785c7.lovable.app-1778800214523.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ecf8ded8-193f-40c3-a980-a71f9111b91e/id-preview-5411dc83--0c0bdcc6-6fb5-40ed-8294-7e93b7c785c7.lovable.app-1778800214523.png" },
+      { property: "og:image", content: `${SITE_URL}${ogImage}` },
+      { name: "twitter:image", content: `${SITE_URL}${ogImage}` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: SITE_URL },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -91,6 +115,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="fr">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
       </head>
       <body>
         {children}
@@ -104,7 +132,10 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <LanguageProvider>
+        <Outlet />
+        <WhatsAppFloat />
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

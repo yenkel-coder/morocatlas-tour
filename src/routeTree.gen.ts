@@ -10,22 +10,25 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CircuitSlugRouteImport } from './routes/circuit.$slug'
+import { Route as CgvRouteImport } from './routes/cgv'
 import { Route as ConfigurerRouteImport } from './routes/configurer'
 import { Route as GalerieRouteImport } from './routes/galerie'
 import { Route as InspirationsRouteImport } from './routes/inspirations'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PhilosophieRouteImport } from './routes/philosophie'
 import { Route as QuiSommesNousRouteImport } from './routes/qui-sommes-nous'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as CircuitSlugRouteImport } from './routes/circuit.$slug'
+import { Route as InspirationsSlugRouteImport } from './routes/inspirations.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CircuitSlugRoute = CircuitSlugRouteImport.update({
-  id: '/circuit/$slug',
-  path: '/circuit/$slug',
+const CgvRoute = CgvRouteImport.update({
+  id: '/cgv',
+  path: '/cgv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfigurerRoute = ConfigurerRouteImport.update({
@@ -43,6 +46,11 @@ const InspirationsRoute = InspirationsRouteImport.update({
   path: '/inspirations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PhilosophieRoute = PhilosophieRouteImport.update({
   id: '/philosophie',
   path: '/philosophie',
@@ -58,81 +66,112 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CircuitSlugRoute = CircuitSlugRouteImport.update({
+  id: '/circuit/$slug',
+  path: '/circuit/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InspirationsSlugRoute = InspirationsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => InspirationsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/circuit/$slug': typeof CircuitSlugRoute
+  '/cgv': typeof CgvRoute
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
-  '/inspirations': typeof InspirationsRoute
+  '/inspirations': typeof InspirationsRouteWithChildren
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/circuit/$slug': typeof CircuitSlugRoute
+  '/inspirations/$slug': typeof InspirationsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/circuit/$slug': typeof CircuitSlugRoute
+  '/cgv': typeof CgvRoute
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
-  '/inspirations': typeof InspirationsRoute
+  '/inspirations': typeof InspirationsRouteWithChildren
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/circuit/$slug': typeof CircuitSlugRoute
+  '/inspirations/$slug': typeof InspirationsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/circuit/$slug': typeof CircuitSlugRoute
+  '/cgv': typeof CgvRoute
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
-  '/inspirations': typeof InspirationsRoute
+  '/inspirations': typeof InspirationsRouteWithChildren
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/circuit/$slug': typeof CircuitSlugRoute
+  '/inspirations/$slug': typeof InspirationsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/circuit/$slug'
+    | '/cgv'
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/mentions-legales'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
+    | '/circuit/$slug'
+    | '/inspirations/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/circuit/$slug'
+    | '/cgv'
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/mentions-legales'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
+    | '/circuit/$slug'
+    | '/inspirations/$slug'
   id:
     | '__root__'
     | '/'
-    | '/circuit/$slug'
+    | '/cgv'
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/mentions-legales'
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
+    | '/circuit/$slug'
+    | '/inspirations/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CircuitSlugRoute: typeof CircuitSlugRoute
+  CgvRoute: typeof CgvRoute
   ConfigurerRoute: typeof ConfigurerRoute
   GalerieRoute: typeof GalerieRoute
-  InspirationsRoute: typeof InspirationsRoute
+  InspirationsRoute: typeof InspirationsRouteWithChildren
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   PhilosophieRoute: typeof PhilosophieRoute
   QuiSommesNousRoute: typeof QuiSommesNousRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  CircuitSlugRoute: typeof CircuitSlugRoute
 }
+
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
@@ -142,11 +181,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/circuit/$slug': {
-      id: '/circuit/$slug'
-      path: '/circuit/$slug'
-      fullPath: '/circuit/$slug'
-      preLoaderRoute: typeof CircuitSlugRouteImport
+    '/cgv': {
+      id: '/cgv'
+      path: '/cgv'
+      fullPath: '/cgv'
+      preLoaderRoute: typeof CgvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configurer': {
@@ -170,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InspirationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/philosophie': {
       id: '/philosophie'
       path: '/philosophie'
@@ -191,21 +237,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/circuit/$slug': {
+      id: '/circuit/$slug'
+      path: '/circuit/$slug'
+      fullPath: '/circuit/$slug'
+      preLoaderRoute: typeof CircuitSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inspirations/$slug': {
+      id: '/inspirations/$slug'
+      path: '/$slug'
+      fullPath: '/inspirations/$slug'
+      preLoaderRoute: typeof InspirationsSlugRouteImport
+      parentRoute: typeof InspirationsRoute
+    }
   }
 }
+
+interface InspirationsRouteChildren {
+  InspirationsSlugRoute: typeof InspirationsSlugRoute
+}
+
+const InspirationsRouteChildren: InspirationsRouteChildren = {
+  InspirationsSlugRoute: InspirationsSlugRoute,
+}
+
+const InspirationsRouteWithChildren = InspirationsRoute._addFileChildren(
+  InspirationsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CircuitSlugRoute: CircuitSlugRoute,
+  CgvRoute: CgvRoute,
   ConfigurerRoute: ConfigurerRoute,
   GalerieRoute: GalerieRoute,
-  InspirationsRoute: InspirationsRoute,
+  InspirationsRoute: InspirationsRouteWithChildren,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   PhilosophieRoute: PhilosophieRoute,
   QuiSommesNousRoute: QuiSommesNousRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  CircuitSlugRoute: CircuitSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes()
+  ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
 import type { startInstance } from './start.ts'
@@ -213,6 +288,6 @@ declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

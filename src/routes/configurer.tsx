@@ -7,8 +7,9 @@ import { sendDevisRequest } from "@/lib/devis.functions";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { fr } from "date-fns/locale";
+import { fr, enGB } from "date-fns/locale";
 import type { DateRange } from "react-day-picker";
+import { useLanguage, type Language } from "@/lib/i18n";
 
 export const Route = createFileRoute("/configurer")({
   head: () => ({
@@ -219,18 +220,34 @@ const PLACES_BY_CITY: Record<string, string[]> = {
   ],
 };
 
-const LODGINGS = [
-  { id: "riad", title: "Riad de charme", desc: "Patios, zellige et hospitalité familiale." },
-  { id: "kasbah", title: "Kasbah & maison d'hôtes", desc: "Pisé, vues sur l'Atlas et table d'hôte." },
-  { id: "design", title: "Hôtel design", desc: "Confort contemporain et services premium." },
-  { id: "camp", title: "Camp de luxe Sahara", desc: "Tentes berbères, dîner sous les étoiles." },
-  { id: "mixte", title: "Mixte", desc: "Une combinaison sur mesure selon les étapes." },
-];
-const PACES = [
-  { id: "slow", title: "Contemplatif", desc: "2 à 3 nuits par étape, immersion lente." },
-  { id: "balanced", title: "Équilibré", desc: "Un mélange de découvertes et de repos." },
-  { id: "intense", title: "Explorateur", desc: "Itinéraire dynamique, multiples étapes." },
-];
+const LODGINGS = {
+  fr: [
+    { id: "riad", title: "Riad de charme", desc: "Patios, zellige et hospitalité familiale." },
+    { id: "kasbah", title: "Kasbah & maison d'hôtes", desc: "Pisé, vues sur l'Atlas et table d'hôte." },
+    { id: "design", title: "Hôtel design", desc: "Confort contemporain et services premium." },
+    { id: "camp", title: "Camp de luxe Sahara", desc: "Tentes berbères, dîner sous les étoiles." },
+    { id: "mixte", title: "Mixte", desc: "Une combinaison sur mesure selon les étapes." },
+  ],
+  en: [
+    { id: "riad", title: "Charming riad", desc: "Patios, zellige tilework and family hospitality." },
+    { id: "kasbah", title: "Kasbah & guesthouse", desc: "Rammed earth, Atlas views and a shared table." },
+    { id: "design", title: "Design hotel", desc: "Contemporary comfort and premium services." },
+    { id: "camp", title: "Sahara luxury camp", desc: "Berber tents, dinner under the stars." },
+    { id: "mixte", title: "A mix of styles", desc: "A tailor-made combination across your stages." },
+  ],
+} as const;
+const PACES = {
+  fr: [
+    { id: "slow", title: "Contemplatif", desc: "2 à 3 nuits par étape, immersion lente." },
+    { id: "balanced", title: "Équilibré", desc: "Un mélange de découvertes et de repos." },
+    { id: "intense", title: "Explorateur", desc: "Itinéraire dynamique, multiples étapes." },
+  ],
+  en: [
+    { id: "slow", title: "Contemplative", desc: "2 to 3 nights per stage, a slow immersion." },
+    { id: "balanced", title: "Balanced", desc: "A mix of discovery and rest." },
+    { id: "intense", title: "Explorer", desc: "A dynamic itinerary, many stages." },
+  ],
+} as const;
 
 type DaySource = "main" | "alternate" | "free";
 type ItineraryDay = { day: number; city: string; places: string[]; note?: string; source: DaySource };
@@ -239,6 +256,7 @@ function buildItinerary(
   destinations: string[],
   places: string[],
   pace: string,
+  language: Language = "fr",
 ): ItineraryDay[] {
   if (destinations.length === 0) return [];
   // Sans champ « durée », on dérive le nombre de jours par ville du rythme.
@@ -272,7 +290,7 @@ function buildItinerary(
         dayPlaces = picked;
         source = "alternate";
       } else {
-        dayPlaces = ["Temps libre & flânerie"];
+        dayPlaces = [language === "fr" ? "Temps libre & flânerie" : "Free time to wander"];
         source = "free";
       }
       days.push({ day: dayCounter++, city, places: dayPlaces, source });
@@ -487,17 +505,25 @@ const ALTERNATES_BY_CITY: Record<string, string[]> = {
   ],
 };
 
-const STEPS = [
-  "Date souhaitée", "Voyageurs", "Rythme", "Villes à découvrir",
-  "Lieux à visiter", "Hébergement", "Coordonnées",
-] as const;
+const STEPS = {
+  fr: [
+    "Date souhaitée", "Voyageurs", "Rythme", "Villes à découvrir",
+    "Lieux à visiter", "Hébergement", "Coordonnées",
+  ],
+  en: [
+    "Preferred dates", "Travellers", "Pace", "Cities to explore",
+    "Places to visit", "Accommodation", "Your details",
+  ],
+} as const;
+const STEP_COUNT = STEPS.fr.length;
 
-// Format français long (« 13 juin 2026 »). On force le fuseau UTC pour
-// éviter qu'une date ISO `yyyy-mm-dd` (interprétée comme minuit UTC) ne
+// Format long (« 13 juin 2026 » / « 13 June 2026 »). On force le fuseau UTC
+// pour éviter qu'une date ISO `yyyy-mm-dd` (interprétée comme minuit UTC) ne
 // bascule au jour précédent dans les fuseaux à l'ouest de Greenwich.
-const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
-  day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
-});
+const DATE_FORMATTERS: Record<Language, Intl.DateTimeFormat> = {
+  fr: new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }),
+  en: new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }),
+};
 
 /** Calcule le nombre de nuits entre deux dates ISO (>= 0). */
 function nightsBetween(departure: string, ret: string): number {
@@ -507,29 +533,33 @@ function nightsBetween(departure: string, ret: string): number {
   return Math.max(0, Math.round((b - a) / 86_400_000));
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso: string, language: Language = "fr"): string {
   if (!iso) return "";
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? "" : DATE_FORMATTER.format(d);
+  return Number.isNaN(d.getTime()) ? "" : DATE_FORMATTERS[language].format(d);
 }
 
 /**
- * Formatte une période en français de manière homogène.
- * - les deux dates : « Du 13 juin 2026 au 23 juin 2026 (10 nuits) »
- * - seule l'aller : « À partir du 13 juin 2026 »
- * - seul le retour : « Jusqu'au 23 juin 2026 »
+ * Formatte une période de manière homogène.
+ * - les deux dates : « Du 13 juin 2026 au 23 juin 2026 (10 nuits) » / "13 June 2026 to 23 June 2026 (10 nights)"
+ * - seule l'aller : « À partir du 13 juin 2026 » / "From 13 June 2026"
+ * - seul le retour : « Jusqu'au 23 juin 2026 » / "Until 23 June 2026"
  * - aucune des deux : « — »
  */
-function formatDateRange(departure: string, ret: string): string {
-  const d = formatDate(departure);
-  const r = formatDate(ret);
+function formatDateRange(departure: string, ret: string, language: Language = "fr"): string {
+  const d = formatDate(departure, language);
+  const r = formatDate(ret, language);
   if (d && r) {
     const n = nightsBetween(departure, ret);
-    const suffix = n > 0 ? ` (${n} nuit${n > 1 ? "s" : ""})` : "";
-    return `Du ${d} au ${r}${suffix}`;
+    if (language === "fr") {
+      const suffix = n > 0 ? ` (${n} nuit${n > 1 ? "s" : ""})` : "";
+      return `Du ${d} au ${r}${suffix}`;
+    }
+    const suffix = n > 0 ? ` (${n} night${n > 1 ? "s" : ""})` : "";
+    return `${d} to ${r}${suffix}`;
   }
-  if (d) return `À partir du ${d}`;
-  if (r) return `Jusqu'au ${r}`;
+  if (d) return language === "fr" ? `À partir du ${d}` : `From ${d}`;
+  if (r) return language === "fr" ? `Jusqu'au ${r}` : `Until ${r}`;
   return "—";
 }
 
@@ -567,7 +597,365 @@ function readDatesFromUrl(): { departureDate?: string; returnDate?: string } {
   };
 }
 
+const CFG_TEXT = {
+  fr: {
+    validation: {
+      depRequired: "Choisissez une date d'aller.",
+      retRequired: "Choisissez une date de retour.",
+      invalidDates: "Dates invalides.",
+      depFuture: "La date d'aller doit être dans le futur.",
+      retAfterDep: "La date de retour doit être après l'aller.",
+      adultRequired: "Au moins un adulte est requis.",
+      paceRequired: "Choisissez un rythme de voyage.",
+      cityRequired: "Sélectionnez au moins une ville.",
+      lodgingRequired: "Choisissez un type d'hébergement.",
+      nameRequired: "Votre nom est requis.",
+      emailRequired: "Votre email est requis.",
+      emailTooLong: "Email trop long (254 caractères maximum).",
+      emailNoSpace: "L'email ne doit pas contenir d'espace.",
+      emailInvalid: "Format d'email invalide (ex. prenom.nom@domaine.com).",
+      emailConfirmRequired: "Veuillez confirmer votre email.",
+      emailMismatch: "Les deux emails ne correspondent pas.",
+      phoneInvalid: "Numéro de téléphone invalide (7 à 20 chiffres, format international accepté).",
+      consentRequired: "Veuillez confirmer votre consentement avant l'envoi.",
+    },
+    sourceLabels: { main: "Lieux principaux", alternate: "Alternance", free: "Temps libre" },
+    toggleOn: (label: string) => `Surlignage « ${label} » activé`,
+    toggleOff: (label: string) => `Surlignage « ${label} » désactivé`,
+    helpClosed: (text: string) => `Message d'aide fermé : ${text}.`,
+    helpAnnounce: (text: string) => `${text}. Bouton OK disponible, ou appuyez sur Échap pour fermer.`,
+    stepLabel: (step: string, total: string) => `Étape ${step} / ${total}`,
+    review: "Récapitulatif",
+    sent: "Demande envoyée",
+    verification: "Vérification",
+    thanks: "Merci",
+    progressAria: "Progression du configurateur",
+    stepValueText: (step: number, total: number, label: string) => `Étape ${step} sur ${total} : ${label}`,
+    reviewValueText: (total: number) => `Récapitulatif (étape ${total} terminée)`,
+    sentValueText: "Demande envoyée",
+    stepsNavAria: "Étapes du configurateur",
+    statusCurrent: "en cours",
+    statusDone: "terminée",
+    statusUpcoming: "à venir",
+    stepButtonAria: (n: number, total: number, label: string, status: string, done: boolean) =>
+      `Étape ${n} sur ${total} : ${label}, ${status}${done ? " (cliquer pour y revenir)" : ""}`,
+    step1: {
+      title: "Quand souhaitez-vous partir ?",
+      subtitle: "Sélectionnez vos dates d'aller et de retour. Le Maroc se visite presque toute l'année.",
+      datesLabel: "Dates souhaitées",
+      chooseReturn: "Choisissez le retour",
+      selectDates: "Sélectionnez vos dates",
+      night: (n: number) => `${n} nuit${n > 1 ? "s" : ""}`,
+      depRequired: "La date d'aller est requise.",
+      retRequired: "La date de retour est requise.",
+      retAfterDep: "La date de retour doit être après l'aller.",
+      bothRequired: "Aller et retour sont obligatoires.",
+    },
+    step2: {
+      title: "Avec qui voyagez-vous ?",
+      subtitle: "Adultes et enfants. Cela nous aide à choisir riads et activités adaptés.",
+      adults: "Adultes",
+      children: "Enfants",
+    },
+    step3: {
+      title: "Quel rythme pour votre exploration ?",
+      subtitle: "Chaque voyageur possède sa propre cadence.",
+    },
+    step4: {
+      title: "Quelles villes souhaitez-vous découvrir ?",
+      subtitle: "Sélectionnez une ou plusieurs étapes. Nous tisserons l'itinéraire pour vous.",
+    },
+    step5: {
+      title: "Quels lieux souhaitez-vous visiter ?",
+      subtitle: "Pour chaque ville choisie, cochez les lieux qui vous tentent (optionnel).",
+      needCity: "Revenez à l'étape précédente pour choisir au moins une ville.",
+    },
+    step6: {
+      title: "Quel type d'hébergement préférez-vous ?",
+      subtitle: "Nous ne travaillons qu'avec des adresses sélectionnées avec soin.",
+    },
+    step7: {
+      title: "Vos coordonnées",
+      subtitle: "Pour vous envoyer votre devis personnalisé sous 48h.",
+      name: "Nom complet",
+      namePlaceholder: "Camille Dupont",
+      email: "Email",
+      emailPlaceholder: "vous@email.com",
+      phone: "Téléphone (optionnel)",
+      phonePlaceholder: "+33 6 12 34 56 78",
+      message: "Message (optionnel)",
+      messagePlaceholder: "Une attention particulière, une occasion spéciale ?",
+      confirmEmail: "Confirmer l'email",
+    },
+    reviewStep: {
+      title: "Vérifiez votre voyage avant l'envoi.",
+      subtitle: "Tout est correct ? Vous pouvez modifier chaque section avant d'envoyer votre demande de devis.",
+      previewEyebrow: "Aperçu d'itinéraire",
+      previewTitle: "Votre voyage, jour après jour",
+      previewNote: "Proposition générée à partir de vos destinations, lieux choisis et style. Affinée par nos concepteurs.",
+      helpRegionAria: "Message d'aide du surlignage",
+      ok: "OK",
+      activeFilter: "Filtre actif :",
+      day: (n: number) => `${n} jour${n > 1 ? "s" : ""}`,
+      disableFilterAria: "Désactiver le filtre",
+      disable: "Désactiver",
+      dayLabel: "Jour",
+      alternateTooltip: "Lieux principaux épuisés : journée composée d'activités d'alternance.",
+      freeTooltip: "Toutes les suggestions sont consommées : journée libre.",
+      alternateBadge: "Alternance",
+      freeBadge: "Temps libre",
+      switchNote: (day: number, hasFree: boolean) =>
+        `À partir du jour ${day}, l'itinéraire bascule sur des activités d'alternance${hasFree ? " puis du temps libre" : ""}. Ajoutez des lieux ou des étapes pour densifier le programme.`,
+      legendMain: "Lieux principaux",
+      legendAlternate: "Activités d'alternance",
+      legendFree: "Temps libre",
+      period: "Période",
+      travelers: "Voyageurs",
+      pace: "Rythme",
+      cities: "Villes à découvrir",
+      places: "Lieux à visiter",
+      lodging: "Hébergement",
+      contact: "Coordonnées",
+      toDefine: "À définir ensemble",
+      yourMessage: "Votre message",
+      consent: "J'accepte d'être recontacté(e) par l'équipe marocatlastour sous 48h ouvrées concernant ma demande de devis. Mes données restent confidentielles et ne sont jamais cédées. Aucune obligation d'achat.",
+      edit: "Modifier",
+    },
+    successStep: {
+      greeting: (name: string) => `Demande bien reçue, ${name}.`,
+      fallbackName: "voyageur",
+      body1: "Un de nos concepteurs étudie votre voyage et vous revient à",
+      body2: "sous 48h ouvrées avec un itinéraire chiffré.",
+      back: "Retour à l'accueil",
+    },
+    nav: {
+      ariaLabel: "Navigation entre les étapes",
+      prevDisabled: "Précédent (indisponible — première étape)",
+      prevTo: (n: number, label: string) => `Précédent : revenir à l'étape ${n} — ${label}`,
+      prev: "Précédent",
+      next: "Suivant",
+      nextTo: (n: number, label: string) => `Suivant : aller à l'étape ${n} — ${label}`,
+      review: "Vérifier ma demande",
+      reviewAria: "Vérifier ma demande : aller au récapitulatif avant l'envoi",
+      submitAria: "Envoyer ma demande de devis personnalisé",
+      sending: "Envoi en cours…",
+      submit: "Envoyer ma demande",
+      sendErrorGeneric: "L'envoi a échoué. Réessayez ou contactez-nous directement.",
+      sendErrorNetwork: "L'envoi a échoué. Vérifiez votre connexion et réessayez.",
+    },
+    recap: {
+      eyebrow: "Votre carnet",
+      title: "Voyage en cours",
+      period: "Période",
+      travelers: "Voyageurs",
+      pace: "Rythme",
+      cities: "Villes",
+      places: "Lieux",
+      lodging: "Hébergement",
+      selected: (n: number) => `${n} sélectionné${n > 1 ? "s" : ""}`,
+      note: "Estimation affinée par nos concepteurs sous 48h.",
+    },
+    travelersValue: (adults: number, children: number) =>
+      `${adults} adulte${adults > 1 ? "s" : ""}${children ? ` · ${children} enfant${children > 1 ? "s" : ""}` : ""}`,
+    dash: "—",
+    confirmEmail: {
+      same: "Les deux emails sont identiques.",
+      emptyFirst: "Renseignez d'abord votre email dans le champ précédent.",
+      incomplete: "L'email de confirmation est incomplet.",
+      tooLong: "L'email de confirmation contient des caractères en trop.",
+      domainDiffers: (got: string, expected: string) => `Le domaine diffère : « ${got} » au lieu de « ${expected} ».`,
+      localDiffers: "La partie avant @ est différente (vérifiez l'orthographe).",
+      caseDiffers: "Une différence de casse ou de caractère spécial empêche la correspondance.",
+      match: "Les emails correspondent.",
+      matchAria: "Les emails correspondent. Plus d'informations.",
+      mismatchAria: "Les emails ne correspondent pas. Plus d'informations.",
+      closeTitle: "Fermer (Échap)",
+    },
+    closeMessage: (text: string) => `Fermer le message « ${text} » (touche Échap)`,
+  },
+  en: {
+    validation: {
+      depRequired: "Choose a departure date.",
+      retRequired: "Choose a return date.",
+      invalidDates: "Invalid dates.",
+      depFuture: "The departure date must be in the future.",
+      retAfterDep: "The return date must be after the departure date.",
+      adultRequired: "At least one adult is required.",
+      paceRequired: "Choose a travel pace.",
+      cityRequired: "Select at least one city.",
+      lodgingRequired: "Choose a type of accommodation.",
+      nameRequired: "Your name is required.",
+      emailRequired: "Your email is required.",
+      emailTooLong: "Email too long (254 characters maximum).",
+      emailNoSpace: "The email must not contain spaces.",
+      emailInvalid: "Invalid email format (e.g. jane.doe@domain.com).",
+      emailConfirmRequired: "Please confirm your email.",
+      emailMismatch: "The two emails do not match.",
+      phoneInvalid: "Invalid phone number (7 to 20 digits, international format accepted).",
+      consentRequired: "Please confirm your consent before sending.",
+    },
+    sourceLabels: { main: "Main highlights", alternate: "Alternate activities", free: "Free time" },
+    toggleOn: (label: string) => `“${label}” highlight enabled`,
+    toggleOff: (label: string) => `“${label}” highlight disabled`,
+    helpClosed: (text: string) => `Help message closed: ${text}.`,
+    helpAnnounce: (text: string) => `${text}. OK button available, or press Escape to close.`,
+    stepLabel: (step: string, total: string) => `Step ${step} / ${total}`,
+    review: "Review",
+    sent: "Request sent",
+    verification: "Review",
+    thanks: "Thank you",
+    progressAria: "Trip builder progress",
+    stepValueText: (step: number, total: number, label: string) => `Step ${step} of ${total}: ${label}`,
+    reviewValueText: (total: number) => `Review (step ${total} completed)`,
+    sentValueText: "Request sent",
+    stepsNavAria: "Trip builder steps",
+    statusCurrent: "in progress",
+    statusDone: "completed",
+    statusUpcoming: "upcoming",
+    stepButtonAria: (n: number, total: number, label: string, status: string, done: boolean) =>
+      `Step ${n} of ${total}: ${label}, ${status}${done ? " (click to go back)" : ""}`,
+    step1: {
+      title: "When would you like to travel?",
+      subtitle: "Select your departure and return dates. Morocco can be visited almost year-round.",
+      datesLabel: "Preferred dates",
+      chooseReturn: "Choose your return",
+      selectDates: "Select your dates",
+      night: (n: number) => `${n} night${n > 1 ? "s" : ""}`,
+      depRequired: "The departure date is required.",
+      retRequired: "The return date is required.",
+      retAfterDep: "The return date must be after the departure date.",
+      bothRequired: "Both departure and return dates are required.",
+    },
+    step2: {
+      title: "Who's travelling with you?",
+      subtitle: "Adults and children. This helps us choose the right riads and activities.",
+      adults: "Adults",
+      children: "Children",
+    },
+    step3: {
+      title: "What pace suits your exploration?",
+      subtitle: "Every traveller has their own rhythm.",
+    },
+    step4: {
+      title: "Which cities would you like to explore?",
+      subtitle: "Select one or several stops. We'll weave the itinerary together for you.",
+    },
+    step5: {
+      title: "Which places would you like to visit?",
+      subtitle: "For each city you chose, tick the places that appeal to you (optional).",
+      needCity: "Go back to the previous step to choose at least one city.",
+    },
+    step6: {
+      title: "What type of accommodation do you prefer?",
+      subtitle: "We only work with carefully selected addresses.",
+    },
+    step7: {
+      title: "Your details",
+      subtitle: "So we can send you your personalised quote within 48 hours.",
+      name: "Full name",
+      namePlaceholder: "Jane Smith",
+      email: "Email",
+      emailPlaceholder: "you@email.com",
+      phone: "Phone (optional)",
+      phonePlaceholder: "+1 555 123 4567",
+      message: "Message (optional)",
+      messagePlaceholder: "A special occasion, a particular request?",
+      confirmEmail: "Confirm email",
+    },
+    reviewStep: {
+      title: "Review your trip before sending.",
+      subtitle: "Is everything correct? You can edit any section before sending your quote request.",
+      previewEyebrow: "Itinerary preview",
+      previewTitle: "Your trip, day by day",
+      previewNote: "Proposal generated from your destinations, chosen places and style. Refined by our designers.",
+      helpRegionAria: "Highlight help message",
+      ok: "OK",
+      activeFilter: "Active filter:",
+      day: (n: number) => `${n} day${n > 1 ? "s" : ""}`,
+      disableFilterAria: "Disable the filter",
+      disable: "Disable",
+      dayLabel: "Day",
+      alternateTooltip: "Main highlights exhausted: the day is filled with alternate activities.",
+      freeTooltip: "All suggestions have been used: a free day.",
+      alternateBadge: "Alternate",
+      freeBadge: "Free time",
+      switchNote: (day: number, hasFree: boolean) =>
+        `From day ${day}, the itinerary switches to alternate activities${hasFree ? " then free time" : ""}. Add places or stops to fill out the programme.`,
+      legendMain: "Main highlights",
+      legendAlternate: "Alternate activities",
+      legendFree: "Free time",
+      period: "Dates",
+      travelers: "Travellers",
+      pace: "Pace",
+      cities: "Cities to explore",
+      places: "Places to visit",
+      lodging: "Accommodation",
+      contact: "Your details",
+      toDefine: "To be decided together",
+      yourMessage: "Your message",
+      consent: "I agree to be contacted by the marocatlastour team within 48 working hours regarding my quote request. My data remains confidential and is never shared. No obligation to purchase.",
+      edit: "Edit",
+    },
+    successStep: {
+      greeting: (name: string) => `Request received, ${name}.`,
+      fallbackName: "traveller",
+      body1: "One of our designers is reviewing your trip and will get back to you at",
+      body2: "within 48 working hours with a priced itinerary.",
+      back: "Back to home",
+    },
+    nav: {
+      ariaLabel: "Navigation between steps",
+      prevDisabled: "Previous (unavailable — first step)",
+      prevTo: (n: number, label: string) => `Previous: go back to step ${n} — ${label}`,
+      prev: "Previous",
+      next: "Next",
+      nextTo: (n: number, label: string) => `Next: go to step ${n} — ${label}`,
+      review: "Review my request",
+      reviewAria: "Review my request: go to the summary before sending",
+      submitAria: "Send my personalised quote request",
+      sending: "Sending…",
+      submit: "Send my request",
+      sendErrorGeneric: "Sending failed. Try again or contact us directly.",
+      sendErrorNetwork: "Sending failed. Check your connection and try again.",
+    },
+    recap: {
+      eyebrow: "Your notebook",
+      title: "Trip in progress",
+      period: "Dates",
+      travelers: "Travellers",
+      pace: "Pace",
+      cities: "Cities",
+      places: "Places",
+      lodging: "Accommodation",
+      selected: (n: number) => `${n} selected`,
+      note: "Estimate refined by our designers within 48 hours.",
+    },
+    travelersValue: (adults: number, children: number) =>
+      `${adults} adult${adults > 1 ? "s" : ""}${children ? ` · ${children} child${children > 1 ? "ren" : ""}` : ""}`,
+    dash: "—",
+    confirmEmail: {
+      same: "The two emails are identical.",
+      emptyFirst: "First enter your email in the field above.",
+      incomplete: "The confirmation email is incomplete.",
+      tooLong: "The confirmation email has extra characters.",
+      domainDiffers: (got: string, expected: string) => `The domain differs: “${got}” instead of “${expected}”.`,
+      localDiffers: "The part before @ is different (check the spelling).",
+      caseDiffers: "A difference in case or a special character prevents a match.",
+      match: "The emails match.",
+      matchAria: "The emails match. More information.",
+      mismatchAria: "The emails do not match. More information.",
+      closeTitle: "Close (Escape)",
+    },
+    closeMessage: (text: string) => `Close message "${text}" (Escape key)`,
+  },
+} as const;
+
 function ConfigurerPage() {
+  const { language } = useLanguage();
+  const t = CFG_TEXT[language];
+  const stepsList = STEPS[language];
+  const lodgings = LODGINGS[language];
+  const paces = PACES[language];
   const [step, setStep] = useState(1);
   const [state, setState] = useState<State>(initial);
   const [submitted, setSubmitted] = useState(false);
@@ -618,7 +1006,7 @@ function ConfigurerPage() {
         sessionStorage.removeItem("marocatlastour:seed");
       }
 
-      const REVIEW = STEPS.length + 1;
+      const REVIEW = STEP_COUNT + 1;
       const fromUrl = readStepFromUrl();
       const fromStorage = Number.parseInt(localStorage.getItem(STEP_STORAGE_KEY) ?? "", 10);
       const candidate = fromUrl ?? (Number.isFinite(fromStorage) ? fromStorage : 1);
@@ -645,8 +1033,8 @@ function ConfigurerPage() {
   // Persiste l'étape + synchronise l'URL (back/forward natif).
   useEffect(() => {
     if (!hydrated.current) return;
-    const REVIEW = STEPS.length + 1;
-    const SUCCESS = STEPS.length + 2;
+    const REVIEW = STEP_COUNT + 1;
+    const SUCCESS = STEP_COUNT + 2;
     try {
       // On efface la persistance après envoi : un reload doit alors
       // reprendre un parcours vierge.
@@ -689,7 +1077,7 @@ function ConfigurerPage() {
   // Back/forward navigateur → on resynchronise l'étape ET les dates sur l'URL.
   useEffect(() => {
     const onPop = () => {
-      const REVIEW = STEPS.length + 1;
+      const REVIEW = STEP_COUNT + 1;
       const fromUrl = readStepFromUrl();
       const next = fromUrl == null ? 1 : Math.max(1, Math.min(fromUrl, REVIEW));
       setStep(next);
@@ -722,8 +1110,8 @@ function ConfigurerPage() {
     });
   }, [state.destinations]);
 
-  const REVIEW_STEP = STEPS.length + 1; // 8
-  const SUCCESS_STEP = STEPS.length + 2; // 9
+  const REVIEW_STEP = STEP_COUNT + 1; // 8
+  const SUCCESS_STEP = STEP_COUNT + 2; // 9
 
 
   const [showError, setShowError] = useState(false);
@@ -747,7 +1135,7 @@ function ConfigurerPage() {
       // est identique à un précédent message de fermeture.
       setSrAnnouncement("");
       requestAnimationFrame(() => {
-        setSrAnnouncement(`Message d'aide fermé : ${previous.text}.`);
+        setSrAnnouncement(t.helpClosed(previous.text));
       });
     }
     requestAnimationFrame(() => lastTileFocusRef.current?.focus());
@@ -758,9 +1146,7 @@ function ConfigurerPage() {
     if (!toggleHint) return;
     setSrAnnouncement("");
     const id = requestAnimationFrame(() => {
-      setSrAnnouncement(
-        `${toggleHint.text}. Bouton OK disponible, ou appuyez sur Échap pour fermer.`,
-      );
+      setSrAnnouncement(t.helpAnnounce(toggleHint.text));
     });
     return () => cancelAnimationFrame(id);
   }, [toggleHint?.id]);
@@ -818,15 +1204,15 @@ function ConfigurerPage() {
   // Le message d'aide reste affiché jusqu'au prochain clic sur une tuile.
 
   const focusSource = (src: DaySource) => {
-    const labels = { main: "Lieux principaux", alternate: "Alternance", free: "Temps libre" } as const;
+    const labels = t.sourceLabels;
     lastTileSourceRef.current = src;
     if (highlightSource === src) {
       setHighlightSource(null);
-      setToggleHint({ id: Date.now(), text: `Surlignage « ${labels[src]} » désactivé`, on: false });
+      setToggleHint({ id: Date.now(), text: t.toggleOff(labels[src]), on: false });
       return;
     }
     setHighlightSource(src);
-    setToggleHint({ id: Date.now(), text: `Surlignage « ${labels[src]} » activé`, on: true });
+    setToggleHint({ id: Date.now(), text: t.toggleOn(labels[src]), on: true });
     // Scroll vers le premier jour correspondant
     requestAnimationFrame(() => {
       const first = itinerary.find((d) => d.source === src);
@@ -852,67 +1238,68 @@ function ConfigurerPage() {
   }, [step, REVIEW_STEP]);
 
   const validation = useMemo<{ ok: boolean; message?: string }>(() => {
+    const v = t.validation;
     switch (step) {
       case 1: {
-        if (!state.departureDate) return { ok: false, message: "Choisissez une date d'aller." };
-        if (!state.returnDate) return { ok: false, message: "Choisissez une date de retour." };
+        if (!state.departureDate) return { ok: false, message: v.depRequired };
+        if (!state.returnDate) return { ok: false, message: v.retRequired };
         const dep = new Date(state.departureDate);
         const ret = new Date(state.returnDate);
         if (Number.isNaN(dep.getTime()) || Number.isNaN(ret.getTime()))
-          return { ok: false, message: "Dates invalides." };
+          return { ok: false, message: v.invalidDates };
         const today = new Date(); today.setHours(0, 0, 0, 0);
-        if (dep < today) return { ok: false, message: "La date d'aller doit être dans le futur." };
-        if (ret <= dep) return { ok: false, message: "La date de retour doit être après l'aller." };
+        if (dep < today) return { ok: false, message: v.depFuture };
+        if (ret <= dep) return { ok: false, message: v.retAfterDep };
         return { ok: true };
       }
       case 2:
         return state.adults >= 1
           ? { ok: true }
-          : { ok: false, message: "Au moins un adulte est requis." };
+          : { ok: false, message: v.adultRequired };
       case 3:
         return state.pace
           ? { ok: true }
-          : { ok: false, message: "Choisissez un rythme de voyage." };
+          : { ok: false, message: v.paceRequired };
       case 4:
         return state.destinations.length > 0
           ? { ok: true }
-          : { ok: false, message: "Sélectionnez au moins une ville." };
+          : { ok: false, message: v.cityRequired };
       case 5:
         // Lieux à visiter — entièrement optionnel.
         return { ok: true };
       case 6:
         return state.lodging
           ? { ok: true }
-          : { ok: false, message: "Choisissez un type d'hébergement." };
+          : { ok: false, message: v.lodgingRequired };
       case 7: {
-        if (!state.name.trim()) return { ok: false, message: "Votre nom est requis." };
+        if (!state.name.trim()) return { ok: false, message: v.nameRequired };
         const email = state.email.trim();
-        if (!email) return { ok: false, message: "Votre email est requis." };
-        if (email.length > 254) return { ok: false, message: "Email trop long (254 caractères maximum)." };
-        if (/\s/.test(email)) return { ok: false, message: "L'email ne doit pas contenir d'espace." };
+        if (!email) return { ok: false, message: v.emailRequired };
+        if (email.length > 254) return { ok: false, message: v.emailTooLong };
+        if (/\s/.test(email)) return { ok: false, message: v.emailNoSpace };
         const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
         if (!emailRegex.test(email) || email.includes(".."))
-          return { ok: false, message: "Format d'email invalide (ex. prenom.nom@domaine.com)." };
+          return { ok: false, message: v.emailInvalid };
         if (!state.emailConfirm.trim())
-          return { ok: false, message: "Veuillez confirmer votre email." };
+          return { ok: false, message: v.emailConfirmRequired };
         if (state.emailConfirm.trim().toLowerCase() !== email.toLowerCase())
-          return { ok: false, message: "Les deux emails ne correspondent pas." };
+          return { ok: false, message: v.emailMismatch };
         if (state.phone.trim() && !/^\+?[0-9\s().-]{7,20}$/.test(state.phone.trim()))
-          return { ok: false, message: "Numéro de téléphone invalide (7 à 20 chiffres, format international accepté)." };
+          return { ok: false, message: v.phoneInvalid };
         return { ok: true };
       }
       case REVIEW_STEP:
         return state.consent
           ? { ok: true }
-          : { ok: false, message: "Veuillez confirmer votre consentement avant l'envoi." };
+          : { ok: false, message: v.consentRequired };
       default:
         return { ok: true };
     }
-  }, [step, state]);
+  }, [step, state, t]);
 
   const itinerary = useMemo(
-    () => buildItinerary(state.destinations, state.places, state.pace),
-    [state.destinations, state.places, state.pace],
+    () => buildItinerary(state.destinations, state.places, state.pace, language),
+    [state.destinations, state.places, state.pace, language],
   );
 
   const next = () => {
@@ -977,13 +1364,13 @@ function ConfigurerPage() {
         },
       });
       if (!res?.ok) {
-        setSendError(res?.error || "L'envoi a échoué. Réessayez ou contactez-nous directement.");
+        setSendError(res?.error || t.nav.sendErrorGeneric);
         setSending(false);
         return;
       }
     } catch (e) {
       console.error(e);
-      setSendError("L'envoi a échoué. Vérifiez votre connexion et réessayez.");
+      setSendError(t.nav.sendErrorNetwork);
       setSending(false);
       return;
     }
@@ -1014,18 +1401,18 @@ function ConfigurerPage() {
             <div className="lg:sticky lg:top-28 space-y-8">
               <div>
                 <p className="label-eyebrow mb-3">
-                  {step <= STEPS.length
-                    ? `Étape ${String(step).padStart(2, "0")} / ${String(STEPS.length).padStart(2, "0")}`
+                  {step <= STEP_COUNT
+                    ? t.stepLabel(String(step).padStart(2, "0"), String(STEP_COUNT).padStart(2, "0"))
                     : step === REVIEW_STEP
-                      ? "Récapitulatif"
-                      : "Demande envoyée"}
+                      ? t.review
+                      : t.sent}
                 </p>
                 <h1 className="font-serif text-3xl">
-                  {step <= STEPS.length
-                    ? STEPS[step - 1]
+                  {step <= STEP_COUNT
+                    ? stepsList[step - 1]
                     : step === REVIEW_STEP
-                      ? "Vérification"
-                      : "Merci"}
+                      ? t.verification
+                      : t.thanks}
                 </h1>
               </div>
               {/* Barre de progression a11y : un role="progressbar" annonce
@@ -1033,21 +1420,21 @@ function ConfigurerPage() {
               <div
                 className="h-px bg-night/10 relative overflow-hidden"
                 role="progressbar"
-                aria-label="Progression du configurateur"
+                aria-label={t.progressAria}
                 aria-valuemin={1}
-                aria-valuemax={STEPS.length}
-                aria-valuenow={Math.min(step, STEPS.length)}
+                aria-valuemax={STEP_COUNT}
+                aria-valuenow={Math.min(step, STEP_COUNT)}
                 aria-valuetext={
-                  step <= STEPS.length
-                    ? `Étape ${step} sur ${STEPS.length} : ${STEPS[step - 1]}`
+                  step <= STEP_COUNT
+                    ? t.stepValueText(step, STEP_COUNT, stepsList[step - 1])
                     : step === REVIEW_STEP
-                      ? `Récapitulatif (étape ${STEPS.length} terminée)`
-                      : "Demande envoyée"
+                      ? t.reviewValueText(STEP_COUNT)
+                      : t.sentValueText
                 }
               >
                 <div
                   className="absolute inset-y-0 left-0 bg-clay transition-all duration-500"
-                  style={{ width: `${Math.min(step, STEPS.length) / STEPS.length * 100}%` }}
+                  style={{ width: `${Math.min(step, STEP_COUNT) / STEP_COUNT * 100}%` }}
                 />
               </div>
               {/* Stepper navigable au clavier : chaque bouton porte un
@@ -1055,20 +1442,20 @@ function ConfigurerPage() {
                   active reçoit aria-current="step". Les étapes futures sont
                   désactivées (disabled) — elles ne sont annoncées qu'à
                   titre informatif. */}
-              <nav aria-label="Étapes du configurateur">
+              <nav aria-label={t.stepsNavAria}>
                 <ol className="space-y-3 text-[13px] md:text-sm uppercase tracking-[0.14em]">
-                  {STEPS.map((label, i) => {
+                  {stepsList.map((label, i) => {
                     const n = i + 1;
                     const done = n < step;
                     const active = n === step;
-                    const status = active ? "en cours" : done ? "terminée" : "à venir";
+                    const status = active ? t.statusCurrent : done ? t.statusDone : t.statusUpcoming;
                     return (
                       <li key={label}>
                         <button
                           type="button"
                           onClick={() => done && setStep(n)}
                           aria-current={active ? "step" : undefined}
-                          aria-label={`Étape ${n} sur ${STEPS.length} : ${label}, ${status}${done ? " (cliquer pour y revenir)" : ""}`}
+                          aria-label={t.stepButtonAria(n, STEP_COUNT, label, status, done)}
                           className={`flex justify-between items-center w-full text-left py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 ${
                             active ? "text-night" : done ? "text-night/60 hover:text-clay" : "text-night/30"
                           }`}
@@ -1094,23 +1481,23 @@ function ConfigurerPage() {
                   const todayIso = new Date().toISOString().slice(0, 10);
                   const depErr = (() => {
                     if (!state.departureDate) {
-                      return (dateTouched.dep || showError) ? "La date d'aller est requise." : "";
+                      return (dateTouched.dep || showError) ? t.step1.depRequired : "";
                     }
-                    return state.departureDate < todayIso ? "La date d'aller doit être dans le futur." : "";
+                    return state.departureDate < todayIso ? t.validation.depFuture : "";
                   })();
                   const retErr = (() => {
                     if (!state.returnDate) {
-                      return (dateTouched.ret || showError) ? "La date de retour est requise." : "";
+                      return (dateTouched.ret || showError) ? t.step1.retRequired : "";
                     }
                     if (state.departureDate && state.returnDate <= state.departureDate) {
-                      return "La date de retour doit être après l'aller.";
+                      return t.step1.retAfterDep;
                     }
                     return "";
                   })();
                   return (
-                  <StepShell title="Quand souhaitez-vous partir ?" subtitle="Sélectionnez vos dates d'aller et de retour. Le Maroc se visite presque toute l'année.">
+                  <StepShell title={t.step1.title} subtitle={t.step1.subtitle}>
                     <div className="space-y-3">
-                      <label htmlFor="trip-dates" className="label-eyebrow text-clay">Dates souhaitées</label>
+                      <label htmlFor="trip-dates" className="label-eyebrow text-clay">{t.step1.datesLabel}</label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <button
@@ -1128,19 +1515,19 @@ function ConfigurerPage() {
                               <CalendarIcon className="h-5 w-5 text-clay" aria-hidden="true" />
                               {state.departureDate && state.returnDate ? (
                                 <span className="text-base">
-                                  {formatDate(state.departureDate)} <span className="text-night/40">→</span> {formatDate(state.returnDate)}
+                                  {formatDate(state.departureDate, language)} <span className="text-night/40">→</span> {formatDate(state.returnDate, language)}
                                 </span>
                               ) : state.departureDate ? (
                                 <span className="text-base">
-                                  {formatDate(state.departureDate)} <span className="text-night/40">→</span> <span className="text-night/50">Choisissez le retour</span>
+                                  {formatDate(state.departureDate, language)} <span className="text-night/40">→</span> <span className="text-night/50">{t.step1.chooseReturn}</span>
                                 </span>
                               ) : (
-                                <span className="text-base text-night/50">Sélectionnez vos dates</span>
+                                <span className="text-base text-night/50">{t.step1.selectDates}</span>
                               )}
                             </span>
                             {state.departureDate && state.returnDate && (
                               <span className="text-sm text-night/60">
-                                {nightsBetween(state.departureDate, state.returnDate)} nuit{nightsBetween(state.departureDate, state.returnDate) > 1 ? "s" : ""}
+                                {t.step1.night(nightsBetween(state.departureDate, state.returnDate))}
                               </span>
                             )}
                           </button>
@@ -1148,7 +1535,7 @@ function ConfigurerPage() {
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="range"
-                            locale={fr}
+                            locale={language === "fr" ? fr : enGB}
                             numberOfMonths={2}
                             defaultMonth={state.departureDate ? new Date(state.departureDate) : new Date()}
                             selected={{
@@ -1185,7 +1572,7 @@ function ConfigurerPage() {
                       )}
                       {!depErr && !retErr && (
                         <p className="text-xs text-night/50">
-                          Aller et retour sont obligatoires.
+                          {t.step1.bothRequired}
                         </p>
                       )}
                     </div>
@@ -1193,17 +1580,17 @@ function ConfigurerPage() {
                   );
                 })()}
                 {step === 2 && (
-                  <StepShell title="Avec qui voyagez-vous ?" subtitle="Adultes et enfants. Cela nous aide à choisir riads et activités adaptés.">
+                  <StepShell title={t.step2.title} subtitle={t.step2.subtitle}>
                     <div className="grid grid-cols-2 gap-8 pt-4">
-                      <Counter label="Adultes" value={state.adults} min={1} onChange={(v) => update("adults", v)} />
-                      <Counter label="Enfants" value={state.children} min={0} onChange={(v) => update("children", v)} />
+                      <Counter label={t.step2.adults} value={state.adults} min={1} onChange={(v) => update("adults", v)} />
+                      <Counter label={t.step2.children} value={state.children} min={0} onChange={(v) => update("children", v)} />
                     </div>
                   </StepShell>
                 )}
                 {step === 3 && (
-                  <StepShell title="Quel rythme pour votre exploration ?" subtitle="Chaque voyageur possède sa propre cadence.">
+                  <StepShell title={t.step3.title} subtitle={t.step3.subtitle}>
                     <div className="grid gap-4 md:grid-cols-3">
-                      {PACES.map(p => (
+                      {paces.map(p => (
                         <button key={p.id} type="button" onClick={() => update("pace", p.id)}
                           className={`text-left p-6 border transition-all ${
                             state.pace === p.id ? "border-clay bg-sand-soft" : "border-night/10 hover:border-night/30"
@@ -1216,15 +1603,15 @@ function ConfigurerPage() {
                   </StepShell>
                 )}
                 {step === 4 && (
-                  <StepShell title="Quelles villes souhaitez-vous découvrir ?" subtitle="Sélectionnez une ou plusieurs étapes. Nous tisserons l'itinéraire pour vous.">
+                  <StepShell title={t.step4.title} subtitle={t.step4.subtitle}>
                     <ChipGrid items={DESTINATIONS} selected={state.destinations} onToggle={(v) => toggle("destinations", v)} />
                   </StepShell>
                 )}
                 {step === 5 && (
-                  <StepShell title="Quels lieux souhaitez-vous visiter ?" subtitle="Pour chaque ville choisie, cochez les lieux qui vous tentent (optionnel).">
+                  <StepShell title={t.step5.title} subtitle={t.step5.subtitle}>
                     {state.destinations.length === 0 ? (
                       <p className="text-sm text-night/60 italic">
-                        Revenez à l'étape précédente pour choisir au moins une ville.
+                        {t.step5.needCity}
                       </p>
                     ) : (
                       <div className="space-y-8">
@@ -1247,9 +1634,9 @@ function ConfigurerPage() {
                   </StepShell>
                 )}
                 {step === 6 && (
-                  <StepShell title="Quel type d'hébergement préférez-vous ?" subtitle="Nous ne travaillons qu'avec des adresses sélectionnées avec soin.">
+                  <StepShell title={t.step6.title} subtitle={t.step6.subtitle}>
                     <div className="space-y-3">
-                      {LODGINGS.map(l => (
+                      {lodgings.map(l => (
                         <button key={l.id} type="button" onClick={() => update("lodging", l.id)}
                           className={`w-full text-left p-5 border flex items-baseline gap-4 transition-all ${
                             state.lodging === l.id ? "border-clay bg-sand-soft" : "border-night/10 hover:border-night/30"
@@ -1262,25 +1649,26 @@ function ConfigurerPage() {
                   </StepShell>
                 )}
                 {step === 7 && (
-                  <StepShell title="Vos coordonnées" subtitle="Pour vous envoyer votre devis personnalisé sous 48h.">
+                  <StepShell title={t.step7.title} subtitle={t.step7.subtitle}>
                     <div className="space-y-6">
-                      <Field label="Nom complet">
-                        <input type="text" value={state.name} onChange={(e) => update("name", e.target.value)} className="field-underline" placeholder="Camille Dupont" />
+                      <Field label={t.step7.name}>
+                        <input type="text" value={state.name} onChange={(e) => update("name", e.target.value)} className="field-underline" placeholder={t.step7.namePlaceholder} />
                       </Field>
-                      <Field label="Email">
-                        <input type="email" value={state.email} onChange={(e) => update("email", e.target.value)} className="field-underline" placeholder="vous@email.com" />
+                      <Field label={t.step7.email}>
+                        <input type="email" value={state.email} onChange={(e) => update("email", e.target.value)} className="field-underline" placeholder={t.step7.emailPlaceholder} />
                       </Field>
                       <ConfirmEmailField
                         email={state.email}
                         value={state.emailConfirm}
                         onChange={(v) => update("emailConfirm", v)}
+                        language={language}
                       />
-                      <Field label="Téléphone (optionnel)">
-                        <input type="tel" value={state.phone} onChange={(e) => update("phone", e.target.value)} className="field-underline" placeholder="+33 6 12 34 56 78" />
+                      <Field label={t.step7.phone}>
+                        <input type="tel" value={state.phone} onChange={(e) => update("phone", e.target.value)} className="field-underline" placeholder={t.step7.phonePlaceholder} />
                       </Field>
-                      <Field label="Message (optionnel)">
+                      <Field label={t.step7.message}>
                         <textarea value={state.message} onChange={(e) => update("message", e.target.value)} rows={3}
-                          className="field-underline resize-none" placeholder="Une attention particulière, une occasion spéciale ?" />
+                          className="field-underline resize-none" placeholder={t.step7.messagePlaceholder} />
                       </Field>
                     </div>
                   </StepShell>
@@ -1294,11 +1682,10 @@ function ConfigurerPage() {
                         tabIndex={-1}
                         className="font-serif text-3xl text-balance focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
                       >
-                        Vérifiez votre voyage avant l'envoi.
+                        {t.reviewStep.title}
                       </h2>
                       <p className="text-sm text-night/60 max-w-lg leading-relaxed">
-                        Tout est correct ? Vous pouvez modifier chaque section avant
-                        d'envoyer votre demande de devis.
+                        {t.reviewStep.subtitle}
                       </p>
                     </div>
 
@@ -1306,11 +1693,11 @@ function ConfigurerPage() {
                       <div className="space-y-4">
                         <div className="flex items-baseline justify-between gap-4">
                           <div>
-                            <p className="label-eyebrow text-clay">Aperçu d'itinéraire</p>
-                            <h3 className="font-serif text-2xl mt-1">Votre voyage, jour après jour</h3>
+                            <p className="label-eyebrow text-clay">{t.reviewStep.previewEyebrow}</p>
+                            <h3 className="font-serif text-2xl mt-1">{t.reviewStep.previewTitle}</h3>
                           </div>
                           <p className="text-[11px] italic text-night/50 max-w-[16rem] text-right">
-                            Proposition générée à partir de vos destinations, lieux choisis et style. Affinée par nos concepteurs.
+                            {t.reviewStep.previewNote}
                           </p>
                         </div>
                         {(() => {
@@ -1322,9 +1709,9 @@ function ConfigurerPage() {
                           return (
                             <div className="space-y-2">
                               <div className="grid grid-cols-3 gap-3">
-                                <StatTile source="main" label="Lieux principaux" count={main} total={total} percent={pct(main)} tone="clay" active={highlightSource === "main"} disabled={main === 0} onClick={() => focusSource("main")} />
-                                <StatTile source="alternate" label="Alternance" count={alt} total={total} percent={pct(alt)} tone="amber" active={highlightSource === "alternate"} disabled={alt === 0} onClick={() => focusSource("alternate")} />
-                                <StatTile source="free" label="Temps libre" count={free} total={total} percent={pct(free)} tone="muted" active={highlightSource === "free"} disabled={free === 0} onClick={() => focusSource("free")} />
+                                <StatTile source="main" label={t.sourceLabels.main} count={main} total={total} percent={pct(main)} tone="clay" active={highlightSource === "main"} disabled={main === 0} onClick={() => focusSource("main")} language={language} />
+                                <StatTile source="alternate" label={t.sourceLabels.alternate} count={alt} total={total} percent={pct(alt)} tone="amber" active={highlightSource === "alternate"} disabled={alt === 0} onClick={() => focusSource("alternate")} language={language} />
+                                <StatTile source="free" label={t.sourceLabels.free} count={free} total={total} percent={pct(free)} tone="muted" active={highlightSource === "free"} disabled={free === 0} onClick={() => focusSource("free")} language={language} />
                               </div>
                               {/* Message d'aide au toggle (a11y: aria-live).
                                   - wrapper : transition opacity + translate sur entrée/sortie globale
@@ -1334,7 +1721,7 @@ function ConfigurerPage() {
                                 ref={toggleHintWrapperRef}
                                 id="toggle-hint-region"
                                 role="group"
-                                aria-label="Message d'aide du surlignage"
+                                aria-label={t.reviewStep.helpRegionAria}
                                 aria-hidden={!toggleHint}
                                 className={`flex items-center justify-center overflow-hidden transition-[max-height,opacity,transform,margin] motion-safe:duration-300 motion-reduce:duration-100 ease-out motion-reduce:transition-[max-height,opacity,margin] ${
                                   toggleHint
@@ -1362,18 +1749,18 @@ function ConfigurerPage() {
                                       ref={toggleHintCloseRef}
                                       type="button"
                                       onClick={closeToggleHint}
-                                      aria-label={`Fermer le message « ${toggleHint.text} » (touche Échap)`}
+                                      aria-label={t.closeMessage(toggleHint.text)}
                                       aria-describedby="toggle-hint-text"
                                       aria-controls="toggle-hint-region"
                                       aria-expanded={true}
-                                      title="Fermer (Échap)"
+                                      title={t.confirmEmail.closeTitle}
                                       className={`ml-1 inline-flex items-center px-1.5 py-0.5 text-[10px] uppercase tracking-[0.16em] border transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-clay ${
                                         toggleHint.on
                                           ? "border-sand/40 text-sand hover:bg-sand hover:text-night"
                                           : "border-night/25 text-night/70 hover:bg-night hover:text-sand"
                                       }`}
                                     >
-                                      OK
+                                      {t.reviewStep.ok}
                                     </button>
                                   </span>
                                 )}
@@ -1395,7 +1782,7 @@ function ConfigurerPage() {
                                 {free > 0 && <div className="bg-night/40" style={{ width: `${pct(free)}%` }} />}
                               </div>
                               {highlightSource && (() => {
-                                const labelMap = { main: "Lieux principaux", alternate: "Alternance", free: "Temps libre" } as const;
+                                const labelMap = t.sourceLabels;
                                 const toneMap = {
                                   main: { dot: "bg-clay", border: "border-clay/50", text: "text-clay" },
                                   alternate: { dot: "bg-amber-500", border: "border-amber-500/50", text: "text-amber-700" },
@@ -1410,27 +1797,27 @@ function ConfigurerPage() {
                                     <div className="flex items-center gap-2 min-w-0">
                                       <span className={`inline-block w-1.5 h-1.5 rounded-full ${toneMap.dot}`} aria-hidden />
                                       <p className="text-[11px] uppercase tracking-[0.18em] text-night/60 truncate">
-                                        Filtre actif :{" "}
+                                        {t.reviewStep.activeFilter}{" "}
                                         <span className={`font-medium ${toneMap.text} normal-case tracking-normal`}>
                                           {labelMap[highlightSource]}
                                         </span>
-                                        <span className="text-night/40 normal-case tracking-normal"> · {matching} jour{matching > 1 ? "s" : ""}</span>
+                                        <span className="text-night/40 normal-case tracking-normal"> · {t.reviewStep.day(matching)}</span>
                                       </p>
                                     </div>
                                     <button
                                       type="button"
                                       onClick={() => setHighlightSource(null)}
                                       className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-night/60 hover:text-clay focus:outline-none focus-visible:ring-2 focus-visible:ring-clay rounded px-2 py-1"
-                                      aria-label="Désactiver le filtre"
+                                      aria-label={t.reviewStep.disableFilterAria}
                                     >
-                                      <span aria-hidden>✕</span> Désactiver
+                                      <span aria-hidden>✕</span> {t.reviewStep.disable}
                                     </button>
                                   </div>
                                 );
                               })()}
                               {alt + free > 0 && (
                                 <p className="text-[11px] text-night/55 leading-snug">
-                                  À partir du jour {itinerary.findIndex((d) => d.source !== "main") + 1}, l'itinéraire bascule sur des activités d'alternance{free > 0 ? " puis du temps libre" : ""}. Ajoutez des lieux ou des étapes pour densifier le programme.
+                                  {t.reviewStep.switchNote(itinerary.findIndex((d) => d.source !== "main") + 1, free > 0)}
                                 </p>
                               )}
                             </div>
@@ -1458,7 +1845,7 @@ function ConfigurerPage() {
                                 }`}
                               >
                                 <div className="shrink-0 w-12">
-                                  <p className="text-[10px] uppercase tracking-[0.2em] text-night/50">Jour</p>
+                                  <p className="text-[10px] uppercase tracking-[0.2em] text-night/50">{t.reviewStep.dayLabel}</p>
                                   <p className={`font-serif text-2xl leading-none ${isFree ? "text-night/60" : isAlt ? "text-amber-600" : "text-clay"}`}>
                                     {String(d.day).padStart(2, "0")}
                                   </p>
@@ -1468,18 +1855,18 @@ function ConfigurerPage() {
                                     <p className="text-[10px] uppercase tracking-[0.22em] text-night/50">{d.city}</p>
                                     {isAlt && (
                                       <span
-                                        title="Lieux principaux épuisés : journée composée d'activités d'alternance."
+                                        title={t.reviewStep.alternateTooltip}
                                         className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.18em] px-1.5 py-0.5 border border-amber-500 text-amber-700 bg-amber-50"
                                       >
-                                        <span aria-hidden>↻</span> Alternance
+                                        <span aria-hidden>↻</span> {t.reviewStep.alternateBadge}
                                       </span>
                                     )}
                                     {isFree && (
                                       <span
-                                        title="Toutes les suggestions sont consommées : journée libre."
+                                        title={t.reviewStep.freeTooltip}
                                         className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.18em] px-1.5 py-0.5 border border-night/30 text-night/60 bg-white"
                                       >
-                                        <span aria-hidden>○</span> Temps libre
+                                        <span aria-hidden>○</span> {t.reviewStep.freeBadge}
                                       </span>
                                     )}
                                   </div>
@@ -1497,16 +1884,16 @@ function ConfigurerPage() {
                         {itinerary.some((d) => d.source !== "main") && (
                           <div className="flex flex-wrap gap-x-5 gap-y-1 text-[10px] uppercase tracking-[0.18em] text-night/50 pt-1">
                             <span className="inline-flex items-center gap-1.5">
-                              <span className="inline-block w-3 h-px bg-clay" /> Lieux principaux
+                              <span className="inline-block w-3 h-px bg-clay" /> {t.reviewStep.legendMain}
                             </span>
                             {itinerary.some((d) => d.source === "alternate") && (
                               <span className="inline-flex items-center gap-1.5">
-                                <span className="inline-block w-3 h-px bg-amber-500" /> Activités d'alternance
+                                <span className="inline-block w-3 h-px bg-amber-500" /> {t.reviewStep.legendAlternate}
                               </span>
                             )}
                             {itinerary.some((d) => d.source === "free") && (
                               <span className="inline-flex items-center gap-1.5">
-                                <span className="inline-block w-3 h-px bg-night/40" /> Temps libre
+                                <span className="inline-block w-3 h-px bg-night/40" /> {t.reviewStep.legendFree}
                               </span>
                             )}
                           </div>
@@ -1515,21 +1902,21 @@ function ConfigurerPage() {
                     )}
 
                     <div className="divide-y divide-night/10 border-y border-night/10">
-                      <ReviewRow label="Période" value={formatDateRange(state.departureDate, state.returnDate)} onEdit={() => setStep(1)} />
-                      <ReviewRow label="Voyageurs" value={`${state.adults} adulte${state.adults > 1 ? "s" : ""}${state.children ? ` · ${state.children} enfant${state.children > 1 ? "s" : ""}` : ""}`} onEdit={() => setStep(2)} />
-                      <ReviewRow label="Rythme" value={PACES.find(p => p.id === state.pace)?.title || "—"} onEdit={() => setStep(3)} />
-                      <ReviewRow label="Villes à découvrir" value={state.destinations.join(" · ") || "—"} onEdit={() => setStep(4)} />
-                      <ReviewRow label="Lieux à visiter" value={state.places.length ? state.places.join(" · ") : "À définir ensemble"} onEdit={() => setStep(5)} />
-                      <ReviewRow label="Hébergement" value={LODGINGS.find(l => l.id === state.lodging)?.title || "—"} onEdit={() => setStep(6)} />
+                      <ReviewRow label={t.reviewStep.period} value={formatDateRange(state.departureDate, state.returnDate, language)} onEdit={() => setStep(1)} />
+                      <ReviewRow label={t.reviewStep.travelers} value={t.travelersValue(state.adults, state.children)} onEdit={() => setStep(2)} />
+                      <ReviewRow label={t.reviewStep.pace} value={paces.find(p => p.id === state.pace)?.title || t.dash} onEdit={() => setStep(3)} />
+                      <ReviewRow label={t.reviewStep.cities} value={state.destinations.join(" · ") || t.dash} onEdit={() => setStep(4)} />
+                      <ReviewRow label={t.reviewStep.places} value={state.places.length ? state.places.join(" · ") : t.reviewStep.toDefine} onEdit={() => setStep(5)} />
+                      <ReviewRow label={t.reviewStep.lodging} value={lodgings.find(l => l.id === state.lodging)?.title || t.dash} onEdit={() => setStep(6)} />
                       <ReviewRow
-                        label="Coordonnées"
+                        label={t.reviewStep.contact}
                         value={`${state.name} · ${state.email}${state.phone ? ` · ${state.phone}` : ""}`}
                         onEdit={() => setStep(7)}
                       />
                     </div>
                     {state.message && (
                       <div className="bg-sand-soft p-5">
-                        <p className="label-eyebrow text-clay mb-2">Votre message</p>
+                        <p className="label-eyebrow text-clay mb-2">{t.reviewStep.yourMessage}</p>
                         <p className="text-sm text-night/80 italic leading-relaxed">« {state.message} »</p>
                       </div>
                     )}
@@ -1542,9 +1929,7 @@ function ConfigurerPage() {
                         aria-required="true"
                       />
                       <span className="text-xs text-night/70 leading-relaxed">
-                        J'accepte d'être recontacté(e) par l'équipe marocatlastour sous 48h
-                        ouvrées concernant ma demande de devis. Mes données restent
-                        confidentielles et ne sont jamais cédées. Aucune obligation d'achat.
+                        {t.reviewStep.consent}
                       </span>
                     </label>
                   </div>
@@ -1557,14 +1942,14 @@ function ConfigurerPage() {
                       tabIndex={-1}
                       className="font-serif text-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
                     >
-                      Demande bien reçue, {state.name.split(" ")[0] || "voyageur"}.
+                      {t.successStep.greeting(state.name.split(" ")[0] || t.successStep.fallbackName)}
                     </h2>
                     <p className="text-night/60 max-w-md leading-relaxed">
-                      Un de nos concepteurs étudie votre voyage et vous revient à
+                      {t.successStep.body1}
                       <span className="text-night"> {state.email} </span>
-                      sous 48h ouvrées avec un itinéraire chiffré.
+                      {t.successStep.body2}
                     </p>
-                    <Link to="/" className="btn-primary mt-4">Retour à l'accueil</Link>
+                    <Link to="/" className="btn-primary mt-4">{t.successStep.back}</Link>
                   </div>
                 )}
               </div>
@@ -1582,7 +1967,7 @@ function ConfigurerPage() {
                     l'annonce du message d'erreur au clic). */}
               {step <= REVIEW_STEP && (
                 <nav
-                  aria-label="Navigation entre les étapes"
+                  aria-label={t.nav.ariaLabel}
                   className="mt-12 pt-6 border-t border-night/10 space-y-4"
                 >
                   {showError && !validation.ok && validation.message && (
@@ -1600,35 +1985,35 @@ function ConfigurerPage() {
                       disabled={step === 1}
                       aria-label={
                         step === 1
-                          ? "Précédent (indisponible — première étape)"
+                          ? t.nav.prevDisabled
                           : step === REVIEW_STEP
-                            ? `Précédent : revenir à l'étape ${STEPS.length} — ${STEPS[STEPS.length - 1]}`
-                            : `Précédent : revenir à l'étape ${step - 1} — ${STEPS[step - 2]}`
+                            ? t.nav.prevTo(STEP_COUNT, stepsList[STEP_COUNT - 1])
+                            : t.nav.prevTo(step - 1, stepsList[step - 2])
                       }
                       className="btn-ghost disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
                     >
-                      <span aria-hidden="true">←</span> Précédent
+                      <span aria-hidden="true">←</span> {t.nav.prev}
                     </button>
-                    {step < STEPS.length && (
+                    {step < STEP_COUNT && (
                       <button
                         onClick={next}
                         aria-disabled={!validation.ok}
                         aria-describedby={showError && !validation.ok ? errorMessageId : undefined}
-                        aria-label={`Suivant : aller à l'étape ${step + 1} — ${STEPS[step]}`}
+                        aria-label={t.nav.nextTo(step + 1, stepsList[step])}
                         className={`btn-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 ${!validation.ok ? "opacity-60" : ""}`}
                       >
-                        Suivant <span aria-hidden="true">→</span>
+                        {t.nav.next} <span aria-hidden="true">→</span>
                       </button>
                     )}
-                    {step === STEPS.length && (
+                    {step === STEP_COUNT && (
                       <button
                         onClick={next}
                         aria-disabled={!validation.ok}
                         aria-describedby={showError && !validation.ok ? errorMessageId : undefined}
-                        aria-label="Vérifier ma demande : aller au récapitulatif avant l'envoi"
+                        aria-label={t.nav.reviewAria}
                         className={`btn-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 ${!validation.ok ? "opacity-60" : ""}`}
                       >
-                        Vérifier ma demande <span aria-hidden="true">→</span>
+                        {t.nav.review} <span aria-hidden="true">→</span>
                       </button>
                     )}
                     {step === REVIEW_STEP && (
@@ -1637,10 +2022,10 @@ function ConfigurerPage() {
                           onClick={submit}
                           disabled={!validation.ok || sending}
                           aria-describedby={showError && !validation.ok ? errorMessageId : undefined}
-                          aria-label="Envoyer ma demande de devis personnalisé"
+                          aria-label={t.nav.submitAria}
                           className={`btn-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 ${!validation.ok || sending ? "opacity-60 cursor-not-allowed" : ""}`}
                         >
-                          {sending ? "Envoi en cours…" : "Envoyer ma demande"}
+                          {sending ? t.nav.sending : t.nav.submit}
                         </button>
                         {sendError && (
                           <p role="alert" className="text-sm text-red-700">{sendError}</p>
@@ -1657,17 +2042,17 @@ function ConfigurerPage() {
           <aside className="lg:col-span-3">
             <div className="lg:sticky lg:top-28 bg-sand-soft p-7 space-y-5">
               <div className="pb-4 border-b border-night/10">
-                <p className="label-eyebrow text-clay">Votre carnet</p>
-                <h3 className="font-serif text-xl mt-1">Voyage en cours</h3>
+                <p className="label-eyebrow text-clay">{t.recap.eyebrow}</p>
+                <h3 className="font-serif text-xl mt-1">{t.recap.title}</h3>
               </div>
-              <RecapItem label="Période" value={formatDateRange(state.departureDate, state.returnDate)} />
-              <RecapItem label="Voyageurs" value={`${state.adults} adulte${state.adults > 1 ? "s" : ""}${state.children ? ` · ${state.children} enfant${state.children > 1 ? "s" : ""}` : ""}`} />
-              <RecapItem label="Rythme" value={PACES.find(p => p.id === state.pace)?.title || "—"} />
-              <RecapItem label="Villes" value={state.destinations.join(" · ") || "—"} />
-              <RecapItem label="Lieux" value={state.places.length ? `${state.places.length} sélectionné${state.places.length > 1 ? "s" : ""}` : "—"} />
-              <RecapItem label="Hébergement" value={LODGINGS.find(l => l.id === state.lodging)?.title || "—"} />
+              <RecapItem label={t.recap.period} value={formatDateRange(state.departureDate, state.returnDate, language)} />
+              <RecapItem label={t.recap.travelers} value={t.travelersValue(state.adults, state.children)} />
+              <RecapItem label={t.recap.pace} value={paces.find(p => p.id === state.pace)?.title || t.dash} />
+              <RecapItem label={t.recap.cities} value={state.destinations.join(" · ") || t.dash} />
+              <RecapItem label={t.recap.places} value={state.places.length ? t.recap.selected(state.places.length) : t.dash} />
+              <RecapItem label={t.recap.lodging} value={lodgings.find(l => l.id === state.lodging)?.title || t.dash} />
               <p className="text-[11px] italic text-night/50 pt-3 border-t border-night/10">
-                Estimation affinée par nos concepteurs sous 48h.
+                {t.recap.note}
               </p>
             </div>
           </aside>
@@ -1754,6 +2139,7 @@ function StatTile({
   active = false,
   disabled = false,
   onClick,
+  language = "fr",
 }: {
   source: DaySource;
   label: string;
@@ -1764,7 +2150,11 @@ function StatTile({
   active?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  language?: Language;
 }) {
+  const statTileText = language === "fr"
+    ? { empty: "Aucun jour de cette catégorie", disable: "Cliquer pour désactiver le surlignage", enable: (l: string) => `Surligner les jours « ${l} »`, ofDays: "j" }
+    : { empty: "No days in this category", disable: "Click to disable the highlight", enable: (l: string) => `Highlight “${l}” days`, ofDays: "d" };
   // Couleurs : neutres au repos, saturées et inversées (fond plein) à l'état actif
   // pour un contraste fort et un toggle on/off évident.
   const palette = {
@@ -1810,10 +2200,10 @@ function StatTile({
       data-stat-source={source}
       title={
         disabled
-          ? "Aucun jour de cette catégorie"
+          ? statTileText.empty
           : active
-            ? "Cliquer pour désactiver le surlignage"
-            : `Surligner les jours « ${label} »`
+            ? statTileText.disable
+            : statTileText.enable(label)
       }
       className={`relative text-left p-3 border transition-all ${
         active
@@ -1845,11 +2235,11 @@ function StatTile({
           {count}
         </span>
         <span className={`text-[10px] ${active ? palette.subActive : "text-night/50"}`}>
-          / {total} j
+          / {total} {statTileText.ofDays}
         </span>
       </p>
       <p className={`text-[10px] mt-0.5 ${active ? palette.subActive : "text-night/50"}`}>
-        {percent}%{active && <span className="ml-1 font-medium">· filtre actif</span>}
+        {percent}%{active && <span className="ml-1 font-medium">· {language === "fr" ? "filtre actif" : "active filter"}</span>}
       </p>
     </button>
   );
@@ -1886,11 +2276,15 @@ function ConfirmEmailField({
   email,
   value,
   onChange,
+  language = "fr",
 }: {
   email: string;
   value: string;
   onChange: (v: string) => void;
+  language?: Language;
 }) {
+  const t = CFG_TEXT[language].confirmEmail;
+  const step7 = CFG_TEXT[language].step7;
   const inputId = useId();
   const tooltipId = useId();
   const errorId = useId();
@@ -1902,17 +2296,17 @@ function ConfirmEmailField({
   const match = hasInput && a.length > 0 && a === b;
   const mismatch = hasInput && !match;
 
-  let reason = "Les deux emails sont identiques.";
+  let reason: string = t.same;
   if (mismatch) {
-    if (a.length === 0) reason = "Renseignez d'abord votre email dans le champ précédent.";
-    else if (b.length < a.length) reason = "L'email de confirmation est incomplet.";
-    else if (b.length > a.length) reason = "L'email de confirmation contient des caractères en trop.";
+    if (a.length === 0) reason = t.emptyFirst;
+    else if (b.length < a.length) reason = t.incomplete;
+    else if (b.length > a.length) reason = t.tooLong;
     else {
       const atA = a.split("@");
       const atB = b.split("@");
-      if (atA[1] && atB[1] && atA[1] !== atB[1]) reason = `Le domaine diffère : « ${atB[1]} » au lieu de « ${atA[1]} ».`;
-      else if (atA[0] !== atB[0]) reason = "La partie avant @ est différente (vérifiez l'orthographe).";
-      else reason = "Une différence de casse ou de caractère spécial empêche la correspondance.";
+      if (atA[1] && atB[1] && atA[1] !== atB[1]) reason = t.domainDiffers(atB[1], atA[1]);
+      else if (atA[0] !== atB[0]) reason = t.localDiffers;
+      else reason = t.caseDiffers;
     }
   }
 
@@ -1926,7 +2320,7 @@ function ConfirmEmailField({
   return (
     <div className="space-y-2">
       <label htmlFor={inputId} className="label-eyebrow text-clay">
-        Confirmer l'email
+        {step7.confirmEmail}
       </label>
       <div className="relative">
         <input
@@ -1939,7 +2333,7 @@ function ConfirmEmailField({
             if (e.key === "Escape" && open) setOpen(false);
           }}
           className="field-underline pr-8 w-full"
-          placeholder="vous@email.com"
+          placeholder={step7.emailPlaceholder}
           autoComplete="off"
           aria-invalid={mismatch}
           aria-describedby={describedBy}
@@ -1954,11 +2348,7 @@ function ConfirmEmailField({
               type="button"
               aria-describedby={tooltipId}
               aria-expanded={open}
-              aria-label={
-                match
-                  ? "Les emails correspondent. Plus d'informations."
-                  : "Les emails ne correspondent pas. Plus d'informations."
-              }
+              aria-label={match ? t.matchAria : t.mismatchAria}
               onFocus={() => setOpen(true)}
               onBlur={() => setOpen(false)}
               onKeyDown={(e) => {
@@ -1981,7 +2371,7 @@ function ConfirmEmailField({
                 open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"
               }`}
             >
-              {match ? "Les emails correspondent." : reason}
+              {match ? t.match : reason}
             </span>
           </span>
         )}
