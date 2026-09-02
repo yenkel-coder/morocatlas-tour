@@ -24,14 +24,14 @@ export const Route = createFileRoute("/")({
 
 const inspirations = {
   fr: [
-    { image: inspSahara, eyebrow: "08 jours · Guide privé", title: "Le seuil du Sahara", desc: "Bivouac sous les étoiles à Erg Chigaga, oasis de Mhamid et thé chez les nomades.", from: "À partir de 2 900 €" },
-    { image: inspAtlas, eyebrow: "12 jours · Lent & immersif", title: "Atlas et vallées cachées", desc: "Randonnées douces, kasbahs en pisé et nuits chez l'habitant à Imlil et Aït Ben Haddou.", from: "À partir de 3 400 €" },
-    { image: inspMedina, eyebrow: "06 jours · Culturel", title: "Médinas & artisans", desc: "Marrakech, Fès et Tétouan. Ateliers privés de zellige, tannerie et soie.", from: "À partir de 2 100 €" },
+    { image: inspSahara, eyebrow: "08 jours · Guide privé", title: "Le seuil du Sahara", desc: "Bivouac sous les étoiles à Erg Chigaga, oasis de Mhamid et thé chez les nomades.", from: "Sur devis" },
+    { image: inspAtlas, eyebrow: "12 jours · Lent & immersif", title: "Atlas et vallées cachées", desc: "Randonnées douces, kasbahs en pisé et nuits chez l'habitant à Imlil et Aït Ben Haddou.", from: "Sur devis" },
+    { image: inspMedina, eyebrow: "06 jours · Culturel", title: "Médinas & artisans", desc: "Marrakech, Fès et Tétouan. Ateliers privés de zellige, tannerie et soie.", from: "Sur devis" },
   ],
   en: [
-    { image: inspSahara, eyebrow: "08 days · Private guide", title: "The edge of the Sahara", desc: "A night under the stars at Erg Chigaga, the Mhamid oasis and tea with nomad families.", from: "From €2,900" },
-    { image: inspAtlas, eyebrow: "12 days · Slow & immersive", title: "Atlas and hidden valleys", desc: "Gentle hikes, rammed-earth kasbahs and homestays in Imlil and Aït Ben Haddou.", from: "From €3,400" },
-    { image: inspMedina, eyebrow: "06 days · Cultural", title: "Medinas & artisans", desc: "Marrakech, Fès and Tétouan. Private workshops in zellige, tannery craft and silk.", from: "From €2,100" },
+    { image: inspSahara, eyebrow: "08 days · Private guide", title: "The edge of the Sahara", desc: "A night under the stars at Erg Chigaga, the Mhamid oasis and tea with nomad families.", from: "Custom quote" },
+    { image: inspAtlas, eyebrow: "12 days · Slow & immersive", title: "Atlas and hidden valleys", desc: "Gentle hikes, rammed-earth kasbahs and homestays in Imlil and Aït Ben Haddou.", from: "Custom quote" },
+    { image: inspMedina, eyebrow: "06 days · Cultural", title: "Medinas & artisans", desc: "Marrakech, Fès and Tétouan. Private workshops in zellige, tannery craft and silk.", from: "Custom quote" },
   ],
 } as const;
 

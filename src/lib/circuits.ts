@@ -24,7 +24,7 @@ export const circuits: Circuit[] = [
       fr: "Bivouac sous les étoiles à Erg Chigaga, oasis de Mhamid et thé chez les nomades.",
       en: "Star-lit bivouac at Erg Chigaga, the oasis of Mhamid and tea with nomad families.",
     },
-    from: { fr: "À partir de 2 900 €", en: "From €2,900" },
+    from: { fr: "Sur devis", en: "Custom quote" },
     image: "/assets/insp-sahara.jpg",
     highlights: [
       { fr: "Bivouac en camp de luxe à Erg Chigaga", en: "Luxury camp bivouac at Erg Chigaga" },
@@ -64,7 +64,7 @@ export const circuits: Circuit[] = [
       fr: "Randonnées douces, kasbahs en pisé et nuits chez l'habitant à Imlil et Aït Ben Haddou.",
       en: "Gentle hikes, rammed-earth kasbahs and homestays in Imlil and Aït Ben Haddou.",
     },
-    from: { fr: "À partir de 3 400 €", en: "From €3,400" },
+    from: { fr: "Sur devis", en: "Custom quote" },
     image: "/assets/insp-atlas.jpg",
     highlights: [
       { fr: "Randonnée dans la vallée de l'Ourika", en: "Hiking in the Ourika valley" },
@@ -104,7 +104,7 @@ export const circuits: Circuit[] = [
       fr: "Marrakech, Fès et Tétouan. Ateliers privés de zellige, tannerie et soie.",
       en: "Marrakech, Fès and Tétouan. Private workshops in zellige, tanning and silk.",
     },
-    from: { fr: "À partir de 2 100 €", en: "From €2,100" },
+    from: { fr: "Sur devis", en: "Custom quote" },
     image: "/assets/insp-medina.jpg",
     highlights: [
       { fr: "Atelier privé de zellige à Fès", en: "Private zellige workshop in Fès" },
@@ -142,7 +142,7 @@ export const circuits: Circuit[] = [
       fr: "Riads d'exception, hammam privé et nuit en camp de luxe au Sahara.",
       en: "Exceptional riads, a private hammam and a night in a luxury Sahara camp.",
     },
-    from: { fr: "À partir de 4 500 €", en: "From €4,500" },
+    from: { fr: "Sur devis", en: "Custom quote" },
     image: "/assets/insp-honeymoon.jpg",
     highlights: [
       { fr: "Suite nuptiale dans un riad de luxe à Marrakech", en: "Honeymoon suite in a luxury Marrakech riad" },
@@ -181,7 +181,7 @@ export const circuits: Circuit[] = [
       fr: "Marrakech, Aït Ben Haddou, Dadès, Merzouga et retour par les gorges du Toudgha.",
       en: "Marrakech, Aït Ben Haddou, Dadès, Merzouga and back via the Todgha gorges.",
     },
-    from: { fr: "À partir de 3 800 €", en: "From €3,800" },
+    from: { fr: "Sur devis", en: "Custom quote" },
     image: "/assets/insp-toursud.jpg",
     highlights: [
       { fr: "Route des mille kasbahs", en: "The road of a thousand kasbahs" },
@@ -223,7 +223,7 @@ export const circuits: Circuit[] = [
       fr: "Cours de cuisine à Fès, marchés aux épices, dîners chez l'habitant.",
       en: "Cooking classes in Fès, spice markets, dinners with local families.",
     },
-    from: { fr: "À partir de 2 600 €", en: "From €2,600" },
+    from: { fr: "Sur devis", en: "Custom quote" },
     image: "/assets/insp-saveurs.jpg",
     highlights: [
       { fr: "Cours de cuisine berbère avec une cheffe locale", en: "Berber cooking class with a local chef" },
