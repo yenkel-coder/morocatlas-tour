@@ -12,19 +12,36 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
-function getInitialLanguage(): Language {
-  if (typeof window === "undefined") return "fr";
+function getStoredLanguage(): Language | null {
+  if (typeof window === "undefined") return null;
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "fr" || stored === "en") return stored;
   } catch {
     // ignore
   }
+  return null;
+}
+
+function detectBrowserLanguage(): Language {
+  if (typeof navigator === "undefined") return "fr";
+  const langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+  for (const l of langs) {
+    if (l?.toLowerCase().startsWith("fr")) return "fr";
+    if (l?.toLowerCase().startsWith("en")) return "en";
+  }
   return "fr";
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+  // Always start at "fr" to match the server-rendered <html lang="fr">;
+  // auto-detect happens client-side after mount to avoid a hydration mismatch.
+  const [language, setLanguageState] = useState<Language>("fr");
+
+  useEffect(() => {
+    const stored = getStoredLanguage();
+    setLanguageState(stored ?? detectBrowserLanguage());
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = language;
