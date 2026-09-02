@@ -76,8 +76,9 @@ function CgvPage() {
               <section>
                 <h2 className="font-serif text-2xl text-night mb-3">5. Governing law</h2>
                 <p>
-                  These terms are governed by French law. In the event of a dispute, an amicable
-                  solution will be sought as a priority before any legal action.
+                  These terms are governed by the law of the Kingdom of Morocco. In the event of
+                  a dispute, an amicable solution will be sought as a priority before any legal
+                  action.
                 </p>
               </section>
 
@@ -155,8 +156,9 @@ function CgvPage() {
             <section>
               <h2 className="font-serif text-2xl text-night mb-3">5. Droit applicable</h2>
               <p>
-                Les présentes conditions sont soumises au droit français. En cas de litige,
-                une solution amiable sera recherchée en priorité avant toute action judiciaire.
+                Les présentes conditions sont soumises au droit du Royaume du Maroc. En cas de
+                litige, une solution amiable sera recherchée en priorité avant toute action
+                judiciaire.
               </p>
             </section>
 
