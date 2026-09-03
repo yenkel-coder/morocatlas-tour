@@ -5,6 +5,11 @@ import gMajorelle from "@/assets/gallery/g-majorelle.jpg";
 import gKoutoubia from "@/assets/gallery/g-koutoubia.jpg";
 import gMarcheCaftans from "@/assets/gallery/g-marche-caftans.jpg";
 import gAtlas1 from "@/assets/gallery/g-atlas-1.jpg";
+import inspMedina from "@/assets/insp-medina.jpg";
+import gPanneauSouk from "@/assets/gallery/g-panneau-souk.jpg";
+import inspSaveurs from "@/assets/insp-saveurs.jpg";
+import gFamilleGorges from "@/assets/gallery/g-famille-gorges.jpg";
+import gPiscineNuit from "@/assets/gallery/g-piscine-nuit.jpg";
 
 export type BlogSection = {
   heading?: LocalizedText;
@@ -263,6 +268,260 @@ export const blogPosts: BlogPost[] = [
           {
             fr: "Au-delà des paysages, ce sont les rencontres qui marquent : un verre de thé partagé, un repas préparé sur place, l'architecture en pisé pensée pour l'inertie thermique. C'est une facette du Maroc rarement montrée dans les circuits classiques, et pourtant essentielle.",
             en: "Beyond the landscapes, it's the encounters that stay with you: a shared glass of tea, a meal prepared on the spot, the rammed-earth architecture designed for thermal inertia. It's a side of Morocco rarely shown in standard tours, yet an essential one.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "fes-en-2-jours",
+    eyebrow: { fr: "Guide ville", en: "City guide" },
+    title: { fr: "Fès en 2 jours : l'essentiel de la médina la plus authentique du Maroc", en: "Fès in 2 days: the essentials of Morocco's most authentic medina" },
+    excerpt: {
+      fr: "Moins touristique que Marrakech, Fès impressionne par l'ampleur de sa médina classée UNESCO. Deux jours suffisent pour saisir l'essentiel, à condition de bien s'organiser.",
+      en: "Less touristy than Marrakech, Fès impresses with the sheer scale of its UNESCO-listed medina. Two days are enough to grasp the essentials, provided you plan well.",
+    },
+    readTime: { fr: "5 min de lecture", en: "5 min read" },
+    image: inspMedina,
+    imageAlt: { fr: "Ruelle animée de la médina de Fès", en: "Bustling alley in the Fès medina" },
+    content: [
+      {
+        paragraphs: [
+          {
+            fr: "Avec plus de 9 000 ruelles, la médina de Fès el-Bali est la plus grande zone piétonne au monde. S'y perdre fait partie de l'expérience, mais un minimum d'organisation permet d'en voir l'essentiel sans épuiser vos deux jours en fausses routes.",
+            en: "With over 9,000 alleys, the Fès el-Bali medina is the largest pedestrian zone in the world. Getting lost is part of the experience, but a little planning helps you see the essentials without burning your two days on wrong turns.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Jour 1 — Tanneries et artisanat", en: "Day 1 — Tanneries and craftsmanship" },
+        paragraphs: [
+          {
+            fr: "Commencez tôt aux tanneries Chouara, les plus anciennes du monde arabe, en pleine activité le matin. Poursuivez vers les souks des dinandiers et des tisserands de soie, puis visitez la médersa Bou Inania, chef-d'œuvre d'architecture mérinide ouvert au public.",
+            en: "Start early at the Chouara tannery, the oldest in the Arab world, in full swing in the morning. Continue to the coppersmiths' and silk weavers' souks, then visit the Bou Inania Madrasa, a masterpiece of Marinid architecture open to the public.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Jour 2 — Vue d'ensemble et Ville Nouvelle", en: "Day 2 — Overview and the New Town" },
+        paragraphs: [
+          {
+            fr: "Montez tôt aux tombeaux mérinides ou au Borj Nord pour une vue d'ensemble sur la médina avant la chaleur. L'après-midi, contrastez avec la Ville Nouvelle, plus posée, avant un dernier tour des souks pour les derniers achats — cuir, poterie bleue de Fès, épices.",
+            en: "Head up early to the Marinid Tombs or Borj Nord for an overview of the medina before the heat sets in. In the afternoon, contrast with the calmer New Town, before one last stroll through the souks for final purchases — leather, Fès blue pottery, spices.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Un bon complément à Marrakech", en: "A good complement to Marrakech" },
+        paragraphs: [
+          {
+            fr: "Si Marrakech séduit par son énergie, Fès impressionne par sa densité historique et son caractère moins touristique. Sur un itinéraire de deux semaines, l'associer à Marrakech et au désert offre un contraste que peu de voyageurs regrettent.",
+            en: "If Marrakech seduces with its energy, Fès impresses with its historical density and less touristy character. On a two-week itinerary, pairing it with Marrakech and the desert offers a contrast few travellers regret.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "essaouira-que-faire",
+    eyebrow: { fr: "Guide ville", en: "City guide" },
+    title: { fr: "Essaouira : que faire dans la cité des alizés ?", en: "Essaouira: what to do in the city of trade winds?" },
+    excerpt: {
+      fr: "À deux heures de Marrakech, Essaouira offre un Maroc plus détendu : remparts face à l'Atlantique, médina bleu et blanc, et vent iodé qui change des dunes du désert.",
+      en: "Two hours from Marrakech, Essaouira offers a more relaxed Morocco: ramparts facing the Atlantic, a blue-and-white medina, and salt air that's a world away from the desert dunes.",
+    },
+    readTime: { fr: "5 min de lecture", en: "5 min read" },
+    image: gPanneauSouk,
+    imageAlt: { fr: "Enseigne artisanale colorée dans un souk d'Essaouira", en: "Colourful craft sign in an Essaouira souk" },
+    content: [
+      {
+        paragraphs: [
+          {
+            fr: "Essaouira tranche avec le reste du Maroc : moins de bousculade dans les souks, une lumière atlantique particulière, et un rythme volontairement plus lent. C'est souvent l'étape que les voyageurs citent comme leur préférée, en fin de circuit.",
+            en: "Essaouira stands apart from the rest of Morocco: less hustle in the souks, a distinctive Atlantic light, and a deliberately slower pace. It's often the stop travellers name as their favourite, toward the end of a trip.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "La médina et le port", en: "The medina and the port" },
+        paragraphs: [
+          {
+            fr: "Classée UNESCO, la médina fortifiée se parcourt facilement en une demi-journée : remparts des Skala, ruelles bleu et blanc, ateliers de marqueterie en bois de thuya. Le port, avec ses barques bleues et ses étals de poisson grillé, mérite une halte en fin de matinée.",
+            en: "UNESCO-listed, the fortified medina is easily explored in half a day: the Skala ramparts, blue-and-white alleys, thuya wood marquetry workshops. The port, with its blue boats and grilled fish stalls, deserves a stop toward the end of the morning.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Vent, plage et activités nautiques", en: "Wind, beach and water sports" },
+        paragraphs: [
+          {
+            fr: "Essaouira est un spot reconnu de windsurf et de kitesurf grâce à ses alizés réguliers. Même sans pratiquer, la plage au sud de la ville offre une belle balade à cheval ou à dromadaire, un contraste inattendu après le désert.",
+            en: "Essaouira is a well-known windsurfing and kitesurfing spot thanks to its steady trade winds. Even without practising, the beach south of the city makes for a lovely horseback or camel ride — an unexpected contrast after the desert.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Combien de temps y rester ?", en: "How long to stay?" },
+        paragraphs: [
+          {
+            fr: "Deux jours suffisent pour l'essentiel, mais beaucoup de voyageurs prolongent d'une journée pour simplement ralentir avant le retour. C'est aussi une excellente étape de fin de circuit avant un vol depuis Marrakech.",
+            en: "Two days cover the essentials, but many travellers stay an extra day simply to slow down before heading home. It's also an excellent final stop before a flight out of Marrakech.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "que-manger-au-maroc",
+    eyebrow: { fr: "Gastronomie", en: "Food & drink" },
+    title: { fr: "Que manger au Maroc ? Les spécialités à ne pas manquer", en: "What to eat in Morocco? Specialities you shouldn't miss" },
+    excerpt: {
+      fr: "Tajine, couscous, pastilla... la cuisine marocaine dépasse largement les clichés. Voici les plats et habitudes culinaires qui méritent votre attention pendant le séjour.",
+      en: "Tajine, couscous, pastilla... Moroccan cuisine goes well beyond the clichés. Here are the dishes and food customs worth your attention during your stay.",
+    },
+    readTime: { fr: "5 min de lecture", en: "5 min read" },
+    image: inspSaveurs,
+    imageAlt: { fr: "Tajine traditionnel garni d'épices et de fruits secs", en: "Traditional tajine garnished with spices and dried fruit" },
+    content: [
+      {
+        paragraphs: [
+          {
+            fr: "La cuisine marocaine varie beaucoup selon les régions et les saisons, bien au-delà du duo tajine-couscous que l'on associe souvent au pays. Voici quelques repères pour mieux la découvrir pendant votre voyage.",
+            en: "Moroccan cuisine varies a great deal by region and season, well beyond the tajine-and-couscous duo often associated with the country. Here are a few pointers to help you discover it during your trip.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Au-delà du tajine", en: "Beyond the tajine" },
+        paragraphs: [
+          {
+            fr: "Le tajine change selon la région : aux pruneaux et amandes à Fès, au citron confit et olives à Marrakech, au poisson sur la côte. Le couscous, lui, est traditionnellement réservé au vendredi dans les familles marocaines — le commander un autre jour reste possible, mais c'est un bon indice culturel.",
+            en: "Tajine varies by region: with prunes and almonds in Fès, with preserved lemon and olives in Marrakech, with fish on the coast. Couscous, meanwhile, is traditionally reserved for Fridays in Moroccan households — ordering it another day is still possible, but it's a useful cultural cue.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Street food et marchés", en: "Street food and markets" },
+        paragraphs: [
+          {
+            fr: "La pastilla (feuilleté sucré-salé au pigeon ou poulet), les msemen (crêpes feuilletées) et la harira (soupe consistante, souvent servie au coucher du soleil pendant le Ramadan) se dégustent avant tout dans la rue ou sur les marchés, loin des restaurants pour touristes.",
+            en: "Pastilla (a sweet-savoury pastry with pigeon or chicken), msemen (layered flatbread) and harira (a hearty soup, often served at sunset during Ramadan) are best enjoyed on the street or in markets, away from tourist-oriented restaurants.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Le thé à la menthe, un rituel", en: "Mint tea, a ritual" },
+        paragraphs: [
+          {
+            fr: "Plus qu'une boisson, le thé à la menthe accompagne chaque rencontre, chaque négociation dans les souks. Le refuser peut être perçu comme un manque de courtoisie — prenez le temps de l'accepter, même une gorgée.",
+            en: "More than a drink, mint tea accompanies every encounter, every negotiation in the souks. Declining it can be seen as a lack of courtesy — take the time to accept at least a sip.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "voyager-au-maroc-en-famille",
+    eyebrow: { fr: "Conseils voyage", en: "Travel tips" },
+    title: { fr: "Voyager au Maroc en famille : nos conseils pour un séjour réussi", en: "Travelling to Morocco with family: our tips for a successful trip" },
+    excerpt: {
+      fr: "Entre désert, montagne et médinas, le Maroc a de quoi captiver petits et grands — à condition d'adapter le rythme. Voici comment organiser un séjour familial sans fatigue inutile.",
+      en: "Between desert, mountains and medinas, Morocco has plenty to captivate kids and adults alike — provided you adapt the pace. Here's how to plan a family trip without unnecessary fatigue.",
+    },
+    readTime: { fr: "6 min de lecture", en: "6 min read" },
+    image: gFamilleGorges,
+    imageAlt: { fr: "Famille en excursion dans les gorges marocaines", en: "Family on an excursion in the Moroccan gorges" },
+    content: [
+      {
+        paragraphs: [
+          {
+            fr: "Le Maroc est une destination familiale plus facile qu'on ne l'imagine : vols courts depuis l'Europe, décalage horaire nul ou minime, et une hospitalité qui inclut naturellement les enfants. Quelques ajustements suffisent pour que le voyage profite à tout le monde.",
+            en: "Morocco is an easier family destination than you might think: short flights from Europe, little to no time difference, and a hospitality that naturally welcomes children. A few adjustments are enough to make the trip enjoyable for everyone.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Adapter le rythme, pas le programme", en: "Adjust the pace, not the programme" },
+        paragraphs: [
+          {
+            fr: "Avec des enfants, mieux vaut prévoir moins d'étapes mais plus de temps sur chacune. Deux à trois nuits minimum par lieu évitent les trajets à répétition, souvent le point le plus fatigant du voyage pour les plus jeunes.",
+            en: "With children, it's better to plan fewer stops but more time at each one. Two to three nights minimum per location avoid repeated transfers, often the most tiring part of the trip for younger travellers.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Les activités qui plaisent aux enfants", en: "Activities kids enjoy" },
+        paragraphs: [
+          {
+            fr: "La balade à dos de dromadaire dans le désert, la baignade dans une piscine de riad, les cascades de la vallée de l'Ourika ou les tours de calèche à Marrakech font partie des expériences qui marquent les plus jeunes — sans pour autant lasser les adultes.",
+            en: "A camel ride in the desert, a swim in a riad pool, the waterfalls of the Ourika valley or a horse-drawn carriage ride in Marrakech are among the experiences that stick with younger travellers — without boring the adults either.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Hébergement : privilégier le confort", en: "Accommodation: prioritise comfort" },
+        paragraphs: [
+          {
+            fr: "Les riads avec piscine, chambres familiales ou suites communicantes rendent le séjour beaucoup plus confortable. Dans le désert, les camps de luxe proposent souvent des tentes familiales spacieuses, une option à privilégier pour une première nuit sous tente en famille.",
+            en: "Riads with a pool, family rooms or connecting suites make the stay far more comfortable. In the desert, luxury camps often offer spacious family tents — worth choosing for a first night under canvas as a family.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "budget-voyage-au-maroc",
+    eyebrow: { fr: "Conseils pratiques", en: "Practical tips" },
+    title: { fr: "Budget voyage au Maroc : combien prévoir pour un séjour sur mesure ?", en: "Morocco travel budget: how much to plan for a tailor-made trip?" },
+    excerpt: {
+      fr: "Entre riad de charme et camp de luxe dans le désert, le budget d'un voyage au Maroc varie fortement. Voici les postes de dépense à anticiper pour un séjour sur mesure.",
+      en: "Between a charming riad and a luxury desert camp, the budget for a trip to Morocco varies widely. Here are the expense categories to anticipate for a tailor-made stay.",
+    },
+    readTime: { fr: "6 min de lecture", en: "6 min read" },
+    image: gPiscineNuit,
+    imageAlt: { fr: "Piscine de riad illuminée à la nuit tombée", en: "Riad pool illuminated at nightfall" },
+    content: [
+      {
+        paragraphs: [
+          {
+            fr: "Le Maroc reste une destination abordable comparée à d'autres voyages long-courriers, mais le budget varie beaucoup selon le niveau d'hébergement, le rythme du circuit et le nombre de voyageurs. Voici comment s'y retrouver avant de composer votre devis.",
+            en: "Morocco remains an affordable destination compared to other long-haul trips, but the budget varies considerably depending on the level of accommodation, the pace of the itinerary and the number of travellers. Here's how to make sense of it before building your quote.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "L'hébergement, le principal poste de variation", en: "Accommodation, the main source of variation" },
+        paragraphs: [
+          {
+            fr: "Une maison d'hôtes simple et un riad 5 étoiles ou un camp de luxe dans le désert n'ont évidemment pas le même tarif. C'est le levier le plus important pour ajuster un budget à la hausse ou à la baisse, bien plus que les activités elles-mêmes.",
+            en: "A simple guesthouse and a 5-star riad or a luxury desert camp obviously don't carry the same price tag. It's the single biggest lever for adjusting a budget up or down — far more than the activities themselves.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Transport et guide privés", en: "Private transport and guide" },
+        paragraphs: [
+          {
+            fr: "Un circuit sur mesure inclut généralement un véhicule privé climatisé et un chauffeur-guide francophone pour toute la durée du séjour — un poste de dépense fixe qui augmente peu avec le nombre de voyageurs, ce qui rend les circuits en groupe ou en famille proportionnellement plus avantageux.",
+            en: "A tailor-made itinerary generally includes a private air-conditioned vehicle and a French-speaking driver-guide for the whole stay — a fixed cost that rises only slightly with the number of travellers, which makes group or family trips proportionally better value.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Ce qui n'est généralement pas inclus", en: "What's usually not included" },
+        paragraphs: [
+          {
+            fr: "Vols internationaux, assurance voyage et la plupart des déjeuners restent en général à la charge du voyageur, sauf mention contraire. Prévoyez aussi un budget pour les achats dans les souks — l'artisanat marocain se négocie, et cela fait partie de l'expérience.",
+            en: "International flights, travel insurance and most lunches are generally the traveller's responsibility, unless stated otherwise. Also budget for souk purchases — Moroccan crafts are meant to be haggled over, and that's part of the experience.",
+          },
+        ],
+      },
+      {
+        heading: { fr: "Notre approche", en: "Our approach" },
+        paragraphs: [
+          {
+            fr: "Plutôt qu'un tarif générique, nous établissons un devis après avoir compris votre rythme, votre niveau de confort souhaité et vos priorités — certains préfèrent économiser sur l'hébergement pour investir dans une expérience unique comme un bivouac privatisé.",
+            en: "Rather than a generic rate, we build a quote once we understand your pace, your desired comfort level and your priorities — some travellers prefer to save on accommodation to invest in a unique experience, like a privatised bivouac.",
           },
         ],
       },
