@@ -3,7 +3,7 @@ import logo from "../assets/logo.svg";
 import { useLanguage } from "../lib/i18n";
 
 const NAV = {
-  fr: { qui: "Qui sommes-nous", devis: "Devis sur mesure", inspirations: "Inspirations", galerie: "Galerie", contact: "Contact" },
+  fr: { qui: "À propos", devis: "Devis sur mesure", inspirations: "Inspirations", galerie: "Galerie", contact: "Contact" },
   en: { qui: "About us", devis: "Tailor-made quote", inspirations: "Inspirations", galerie: "Gallery", contact: "Contact" },
 } as const;
 

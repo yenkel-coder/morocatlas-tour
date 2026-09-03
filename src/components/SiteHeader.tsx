@@ -6,7 +6,7 @@ import { useLanguage } from "../lib/i18n";
 
 const NAV_ITEMS = {
   fr: [
-    { to: "/qui-sommes-nous", label: "Qui sommes-nous" },
+    { to: "/qui-sommes-nous", label: "À propos" },
     { to: "/configurer", label: "Devis sur mesure" },
     { to: "/inspirations", label: "Inspirations" },
     { to: "/galerie", label: "Galerie" },
