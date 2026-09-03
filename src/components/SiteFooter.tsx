@@ -3,8 +3,8 @@ import logo from "../assets/logo.svg";
 import { useLanguage } from "../lib/i18n";
 
 const NAV = {
-  fr: { qui: "À propos", devis: "Devis sur mesure", inspirations: "Inspirations", galerie: "Galerie", contact: "Contact" },
-  en: { qui: "About us", devis: "Tailor-made quote", inspirations: "Inspirations", galerie: "Gallery", contact: "Contact" },
+  fr: { qui: "À propos", devis: "Devis sur mesure", inspirations: "Inspirations", galerie: "Galerie", blog: "Blog", contact: "Contact" },
+  en: { qui: "About us", devis: "Tailor-made quote", inspirations: "Inspirations", galerie: "Gallery", blog: "Blog", contact: "Contact" },
 } as const;
 
 export function SiteFooter() {
@@ -44,6 +44,7 @@ export function SiteFooter() {
             <li><Link to="/configurer" className="hover:text-clay transition-colors">{nav.devis}</Link></li>
             <li><Link to="/inspirations" className="hover:text-clay transition-colors">{nav.inspirations}</Link></li>
             <li><Link to="/galerie" className="hover:text-clay transition-colors">{nav.galerie}</Link></li>
+            <li><Link to="/blog" className="hover:text-clay transition-colors">{nav.blog}</Link></li>
             <li><a href="mailto:contact@marocatlastour.com" className="hover:text-clay transition-colors">{nav.contact}</a></li>
           </ul>
         </div>

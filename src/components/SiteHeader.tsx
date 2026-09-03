@@ -10,12 +10,14 @@ const NAV_ITEMS = {
     { to: "/configurer", label: "Devis sur mesure" },
     { to: "/inspirations", label: "Inspirations" },
     { to: "/galerie", label: "Galerie" },
+    { to: "/blog", label: "Blog" },
   ],
   en: [
     { to: "/qui-sommes-nous", label: "About us" },
     { to: "/configurer", label: "Tailor-made quote" },
     { to: "/inspirations", label: "Inspirations" },
     { to: "/galerie", label: "Gallery" },
+    { to: "/blog", label: "Blog" },
   ],
 } as const;
 

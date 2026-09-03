@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { circuits } from "../lib/circuits";
+import { blogPosts } from "../lib/blog";
 
 const BASE_URL = "https://www.marocatlastour.com";
 
@@ -19,10 +20,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/qui-sommes-nous", changefreq: "monthly", priority: "0.5" },
           { path: "/mentions-legales", changefreq: "yearly", priority: "0.2" },
           { path: "/cgv", changefreq: "yearly", priority: "0.2" },
+          { path: "/blog", changefreq: "weekly", priority: "0.7" },
           ...circuits.map((c) => ({
             path: `/circuit/${c.slug}`,
             changefreq: "monthly" as const,
             priority: "0.7",
+          })),
+          ...blogPosts.map((p) => ({
+            path: `/blog/${p.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.6",
           })),
         ];
         const urls = entries.map(e => [

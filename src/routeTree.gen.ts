@@ -18,6 +18,8 @@ import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PhilosophieRouteImport } from './routes/philosophie'
 import { Route as QuiSommesNousRouteImport } from './routes/qui-sommes-nous'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as BlogIndexRouteImport } from './routes/blog/index'
+import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as CircuitSlugRouteImport } from './routes/circuit.$slug'
 import { Route as InspirationsSlugRouteImport } from './routes/inspirations.$slug'
 
@@ -66,6 +68,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CircuitSlugRoute = CircuitSlugRouteImport.update({
   id: '/circuit/$slug',
   path: '/circuit/$slug',
@@ -87,8 +99,10 @@ export interface FileRoutesByFullPath {
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/circuit/$slug': typeof CircuitSlugRoute
   '/inspirations/$slug': typeof InspirationsSlugRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,8 +114,10 @@ export interface FileRoutesByTo {
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/circuit/$slug': typeof CircuitSlugRoute
   '/inspirations/$slug': typeof InspirationsSlugRoute
+  '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,8 +130,10 @@ export interface FileRoutesById {
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/circuit/$slug': typeof CircuitSlugRoute
   '/inspirations/$slug': typeof InspirationsSlugRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,8 +147,10 @@ export interface FileRouteTypes {
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
+    | '/blog/$slug'
     | '/circuit/$slug'
     | '/inspirations/$slug'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -142,8 +162,10 @@ export interface FileRouteTypes {
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
+    | '/blog/$slug'
     | '/circuit/$slug'
     | '/inspirations/$slug'
+    | '/blog'
   id:
     | '__root__'
     | '/'
@@ -155,8 +177,10 @@ export interface FileRouteTypes {
     | '/philosophie'
     | '/qui-sommes-nous'
     | '/sitemap.xml'
+    | '/blog/$slug'
     | '/circuit/$slug'
     | '/inspirations/$slug'
+    | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,7 +193,9 @@ export interface RootRouteChildren {
   PhilosophieRoute: typeof PhilosophieRoute
   QuiSommesNousRoute: typeof QuiSommesNousRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   CircuitSlugRoute: typeof CircuitSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -237,6 +263,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/circuit/$slug': {
       id: '/circuit/$slug'
       path: '/circuit/$slug'
@@ -276,7 +316,9 @@ const rootRouteChildren: RootRouteChildren = {
   PhilosophieRoute: PhilosophieRoute,
   QuiSommesNousRoute: QuiSommesNousRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  BlogSlugRoute: BlogSlugRoute,
   CircuitSlugRoute: CircuitSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
