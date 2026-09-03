@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 import { useLanguage } from "../lib/i18n";
 
 const NAV = {
