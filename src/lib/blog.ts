@@ -1,10 +1,10 @@
 import type { Language } from "./i18n";
 import type { LocalizedText } from "./circuits";
-import heroRiad from "@/assets/hero-riad.jpg";
 import inspSahara from "@/assets/insp-sahara.jpg";
-import inspAtlas from "@/assets/insp-atlas.jpg";
-import inspToursud from "@/assets/insp-toursud.jpg";
+import gMajorelle from "@/assets/gallery/g-majorelle.jpg";
 import gKoutoubia from "@/assets/gallery/g-koutoubia.jpg";
+import gMarcheCaftans from "@/assets/gallery/g-marche-caftans.jpg";
+import gAtlas1 from "@/assets/gallery/g-atlas-1.jpg";
 
 export type BlogSection = {
   heading?: LocalizedText;
@@ -32,8 +32,8 @@ export const blogPosts: BlogPost[] = [
       en: "Ten days in Morocco is enough to taste its great contrasts: medinas, mountains and desert. Here's how to build a coherent itinerary without rushing.",
     },
     readTime: { fr: "6 min de lecture", en: "6 min read" },
-    image: heroRiad,
-    imageAlt: { fr: "Patio d'un riad marocain baigné de lumière", en: "Sunlit courtyard of a Moroccan riad" },
+    image: gMajorelle,
+    imageAlt: { fr: "Jardin Majorelle et son bleu emblématique à Marrakech", en: "Majorelle Garden and its emblematic blue in Marrakech" },
     content: [
       {
         paragraphs: [
@@ -179,8 +179,8 @@ export const blogPosts: BlogPost[] = [
       en: "Two weeks let you see Morocco without skimming the surface. Here's how to combine imperial cities, desert and coast without piling on unnecessary transfers.",
     },
     readTime: { fr: "7 min de lecture", en: "7 min read" },
-    image: inspToursud,
-    imageAlt: { fr: "Kasbah traditionnelle dans le sud marocain", en: "Traditional kasbah in southern Morocco" },
+    image: gMarcheCaftans,
+    imageAlt: { fr: "Marché coloré et caftans traditionnels", en: "Colourful market and traditional caftans" },
     content: [
       {
         paragraphs: [
@@ -228,8 +228,8 @@ export const blogPosts: BlogPost[] = [
       en: "Less than an hour from Marrakech, the High Atlas offers gentle hikes, rammed-earth villages and authentic encounters — a perfect counterpoint to the city's bustle.",
     },
     readTime: { fr: "6 min de lecture", en: "6 min read" },
-    image: inspAtlas,
-    imageAlt: { fr: "Village berbère niché dans les montagnes de l'Atlas", en: "Berber village nestled in the Atlas mountains" },
+    image: gAtlas1,
+    imageAlt: { fr: "Crêtes de l'Atlas et vallée encaissée", en: "Atlas ridges and a deep valley" },
     content: [
       {
         paragraphs: [
