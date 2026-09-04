@@ -11,11 +11,11 @@ import { useLanguage } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "marocatlastour — Circuits sur mesure au Maroc" },
+      { title: "Voyage au Maroc sur mesure — marocatlastour" },
       {
         name: "description",
         content:
-          "Configurez votre voyage personnalisé au Maroc en 10 étapes. Riads, Sahara, Atlas, médinas — recevez un devis qualifié sous 48h.",
+          "Organisez votre voyage au Maroc sur mesure : riads, Sahara, Atlas, médinas. Configurez votre circuit en 10 étapes et recevez un devis qualifié sous 48h.",
       },
     ],
   }),
