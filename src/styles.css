@@ -113,6 +113,22 @@
            focus:outline-none focus:border-clay transition-colors
            placeholder:text-night/30;
   }
+  .mat-phone-input {
+    @apply flex items-center gap-2 border-b border-night/15 py-1;
+  }
+  .mat-phone-input .PhoneInputInput {
+    @apply w-full bg-transparent border-0 py-2 text-base
+           focus:outline-none placeholder:text-night/30;
+  }
+  .mat-phone-input:focus-within {
+    @apply border-clay;
+  }
+  .mat-phone-input .PhoneInputCountry {
+    @apply mr-1;
+  }
+  .mat-phone-input .PhoneInputCountrySelectArrow {
+    @apply opacity-50;
+  }
   .label-eyebrow {
     @apply text-[10px] uppercase tracking-[0.22em] text-night/70 font-medium;
   }

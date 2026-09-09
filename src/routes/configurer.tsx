@@ -10,6 +10,10 @@ import { cn } from "@/lib/utils";
 import { fr, enGB } from "date-fns/locale";
 import type { DateRange } from "react-day-picker";
 import { useLanguage, type Language } from "@/lib/i18n";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import fr_phone from "react-phone-number-input/locale/fr.json";
+import en_phone from "react-phone-number-input/locale/en.json";
+import "react-phone-number-input/style.css";
 
 export const Route = createFileRoute("/configurer")({
   head: () => ({
@@ -1288,7 +1292,7 @@ function ConfigurerPage() {
           return { ok: false, message: v.emailMismatch };
         const phone = state.phone.trim();
         if (!phone) return { ok: false, message: v.phoneRequired };
-        if (!/^\+?[0-9\s().-]{7,20}$/.test(phone))
+        if (!isValidPhoneNumber(phone))
           return { ok: false, message: v.phoneInvalid };
         return { ok: true };
       }
@@ -1668,7 +1672,15 @@ function ConfigurerPage() {
                         language={language}
                       />
                       <Field label={t.step7.phone}>
-                        <input type="tel" required value={state.phone} onChange={(e) => update("phone", e.target.value)} className="field-underline" placeholder={t.step7.phonePlaceholder} />
+                        <PhoneInput
+                          international
+                          defaultCountry="MA"
+                          labels={language === "fr" ? fr_phone : en_phone}
+                          value={state.phone || undefined}
+                          onChange={(v) => update("phone", v ?? "")}
+                          className="mat-phone-input"
+                          placeholder={t.step7.phonePlaceholder}
+                        />
                       </Field>
                       <Field label={t.step7.message}>
                         <textarea value={state.message} onChange={(e) => update("message", e.target.value)} rows={3}
