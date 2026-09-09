@@ -6,10 +6,25 @@ const WHATSAPP_MESSAGE = {
   en: "Hello, I'd like to learn more about a tailor-made trip to Morocco.",
 } as const;
 
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+  }
+}
+
 export function WhatsAppFloat() {
   const { language } = useLanguage();
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE[language])}`;
   const label = language === "fr" ? "Contactez-nous sur WhatsApp" : "Contact us on WhatsApp";
+
+  const handleClick = () => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "whatsapp_click",
+      whatsapp_location: "floating_button",
+      page_path: window.location.pathname,
+    });
+  };
 
   return (
     <a
@@ -17,6 +32,7 @@ export function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
+      onClick={handleClick}
       className="fixed bottom-5 right-5 md:bottom-6 md:right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-transform hover:scale-105"
     >
       <svg
