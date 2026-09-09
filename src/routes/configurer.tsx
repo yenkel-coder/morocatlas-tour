@@ -616,6 +616,7 @@ const CFG_TEXT = {
       emailInvalid: "Format d'email invalide (ex. prenom.nom@domaine.com).",
       emailConfirmRequired: "Veuillez confirmer votre email.",
       emailMismatch: "Les deux emails ne correspondent pas.",
+      phoneRequired: "Votre numéro de téléphone est requis.",
       phoneInvalid: "Numéro de téléphone invalide (7 à 20 chiffres, format international accepté).",
       consentRequired: "Veuillez confirmer votre consentement avant l'envoi.",
     },
@@ -681,7 +682,7 @@ const CFG_TEXT = {
       namePlaceholder: "Camille Dupont",
       email: "Email",
       emailPlaceholder: "vous@email.com",
-      phone: "Téléphone (optionnel)",
+      phone: "Téléphone",
       phonePlaceholder: "+33 6 12 34 56 78",
       message: "Message (optionnel)",
       messagePlaceholder: "Une attention particulière, une occasion spéciale ?",
@@ -791,6 +792,7 @@ const CFG_TEXT = {
       emailInvalid: "Invalid email format (e.g. jane.doe@domain.com).",
       emailConfirmRequired: "Please confirm your email.",
       emailMismatch: "The two emails do not match.",
+      phoneRequired: "Your phone number is required.",
       phoneInvalid: "Invalid phone number (7 to 20 digits, international format accepted).",
       consentRequired: "Please confirm your consent before sending.",
     },
@@ -856,7 +858,7 @@ const CFG_TEXT = {
       namePlaceholder: "Jane Smith",
       email: "Email",
       emailPlaceholder: "you@email.com",
-      phone: "Phone (optional)",
+      phone: "Phone",
       phonePlaceholder: "+1 555 123 4567",
       message: "Message (optional)",
       messagePlaceholder: "A special occasion, a particular request?",
@@ -1284,7 +1286,9 @@ function ConfigurerPage() {
           return { ok: false, message: v.emailConfirmRequired };
         if (state.emailConfirm.trim().toLowerCase() !== email.toLowerCase())
           return { ok: false, message: v.emailMismatch };
-        if (state.phone.trim() && !/^\+?[0-9\s().-]{7,20}$/.test(state.phone.trim()))
+        const phone = state.phone.trim();
+        if (!phone) return { ok: false, message: v.phoneRequired };
+        if (!/^\+?[0-9\s().-]{7,20}$/.test(phone))
           return { ok: false, message: v.phoneInvalid };
         return { ok: true };
       }
@@ -1664,7 +1668,7 @@ function ConfigurerPage() {
                         language={language}
                       />
                       <Field label={t.step7.phone}>
-                        <input type="tel" value={state.phone} onChange={(e) => update("phone", e.target.value)} className="field-underline" placeholder={t.step7.phonePlaceholder} />
+                        <input type="tel" required value={state.phone} onChange={(e) => update("phone", e.target.value)} className="field-underline" placeholder={t.step7.phonePlaceholder} />
                       </Field>
                       <Field label={t.step7.message}>
                         <textarea value={state.message} onChange={(e) => update("message", e.target.value)} rows={3}

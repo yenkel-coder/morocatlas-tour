@@ -12,7 +12,7 @@ const PayloadSchema = z.object({
   lodging: z.string().max(60),
   name: z.string().min(1).max(120),
   email: z.string().email().max(200),
-  phone: z.string().max(40).optional().default(""),
+  phone: z.string().min(1).max(40),
   message: z.string().max(4000).optional().default(""),
 });
 
