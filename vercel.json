@@ -4,6 +4,10 @@
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "link.marocatlastour.com" }],
       "destination": "/link.html"
+    },
+    {
+      "source": "/link",
+      "destination": "/link.html"
     }
   ]
 }
