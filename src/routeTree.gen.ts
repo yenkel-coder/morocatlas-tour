@@ -14,6 +14,7 @@ import { Route as CgvRouteImport } from './routes/cgv'
 import { Route as ConfigurerRouteImport } from './routes/configurer'
 import { Route as GalerieRouteImport } from './routes/galerie'
 import { Route as InspirationsRouteImport } from './routes/inspirations'
+import { Route as LinkRouteImport } from './routes/link'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as PhilosophieRouteImport } from './routes/philosophie'
 import { Route as QuiSommesNousRouteImport } from './routes/qui-sommes-nous'
@@ -46,6 +47,11 @@ const GalerieRoute = GalerieRouteImport.update({
 const InspirationsRoute = InspirationsRouteImport.update({
   id: '/inspirations',
   path: '/inspirations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinkRoute = LinkRouteImport.update({
+  id: '/link',
+  path: '/link',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRouteWithChildren
+  '/link': typeof LinkRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRouteWithChildren
+  '/link': typeof LinkRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/configurer': typeof ConfigurerRoute
   '/galerie': typeof GalerieRoute
   '/inspirations': typeof InspirationsRouteWithChildren
+  '/link': typeof LinkRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/philosophie': typeof PhilosophieRoute
   '/qui-sommes-nous': typeof QuiSommesNousRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/link'
     | '/mentions-legales'
     | '/philosophie'
     | '/qui-sommes-nous'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/link'
     | '/mentions-legales'
     | '/philosophie'
     | '/qui-sommes-nous'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/configurer'
     | '/galerie'
     | '/inspirations'
+    | '/link'
     | '/mentions-legales'
     | '/philosophie'
     | '/qui-sommes-nous'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   ConfigurerRoute: typeof ConfigurerRoute
   GalerieRoute: typeof GalerieRoute
   InspirationsRoute: typeof InspirationsRouteWithChildren
+  LinkRoute: typeof LinkRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PhilosophieRoute: typeof PhilosophieRoute
   QuiSommesNousRoute: typeof QuiSommesNousRoute
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/inspirations'
       fullPath: '/inspirations'
       preLoaderRoute: typeof InspirationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/link': {
+      id: '/link'
+      path: '/link'
+      fullPath: '/link'
+      preLoaderRoute: typeof LinkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -312,6 +332,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfigurerRoute: ConfigurerRoute,
   GalerieRoute: GalerieRoute,
   InspirationsRoute: InspirationsRouteWithChildren,
+  LinkRoute: LinkRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   PhilosophieRoute: PhilosophieRoute,
   QuiSommesNousRoute: QuiSommesNousRoute,
