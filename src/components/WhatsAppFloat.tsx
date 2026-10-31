@@ -1,6 +1,6 @@
 import { useLanguage } from "../lib/i18n";
 
-const WHATSAPP_NUMBER = "33780390269";
+const WHATSAPP_NUMBER = "33665470445";
 const WHATSAPP_MESSAGE = {
   fr: "Bonjour, je souhaite en savoir plus sur un voyage sur mesure au Maroc.",
   en: "Hello, I'd like to learn more about a tailor-made trip to Morocco.",
