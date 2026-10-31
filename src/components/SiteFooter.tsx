@@ -57,8 +57,8 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
-              <a href="tel:+33780390269" className="hover:text-clay transition-colors">
-                +33 7 80 39 02 69
+              <a href="tel:+33665470445" className="hover:text-clay transition-colors">
+                +33 6 65 47 04 45
               </a>
             </li>
             <li>{t.location}</li>
